@@ -16,35 +16,73 @@
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
             <link rel="stylesheet" href="main.css" /> 
     </head>
-    <body ng-app="Service">
+    <body ng-app="Service" >
         <header>
-            
+
         </header>
         <main>
-            <table>
+            
+            <table ng-controller = "table" >
                 <tr>
+                    <th>
+                        Imie
+                    </th>
+                    <th>
+                        Nazwisko
+                    </th>
+                    <th>
+                        Data Urodzenia
+                    </th>
+                    <th>
+                        Funkcja
+                    </th>
+                    <th>
+                        Doświadczenie
+                    </th>
+                </tr>
+                <tr ng-repeat = "x in json | orderBy:'-age'">
                     <td>
+                        {{x.firstName}}
+                    </td>
+                    <td>
+                        {{x.lastName}}
+                    </td>
+                    <td>
+                        {{x.dateOfBirth}}
+                    </td>
+                    <td>
+                        {{x.function}}
+                    </td>
+                    <td>
+                        {{x.experience}}
                     </td>
                 </tr>
             </table>
         </main>
-        
         <script>
         
         //variable
         var appName = "Service";
         var app = angular.module(appName, []);
-
+            //tests
+         
+         $.getJSON("https://raw.githubusercontent.com/ElderDrop/Projekt-Na-Sta--/master/sluzba.json",function(data){
+             json = data;
+            
+         });
         //controllers
-        app.controller(appName,function($scope){
-            $scope.test = "mama"; 
+        app.controller("table",function($scope,$http){
+           $http.get("https://raw.githubusercontent.com/ElderDrop/Projekt-Na-Sta--/master/sluzba.json").then(function(data){
+              return $scope.json = data.data;
+           });
+             
         });
-        //tests
-         $.get("file://G:\XSolve\Kwalifikacja\sluzba.json",function(data){
-                var elements= [];
-                var json = data;
-                console.log(json);
-            })
+
+        
+         function test(){
+            console.log(json[0].firstName);
+         }
+         
         </script>
     </body>
 </html>
