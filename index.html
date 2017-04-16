@@ -25,6 +25,9 @@
             <table ng-controller = "table" >
                 <tr>
                     <th>
+                        Id
+                    </th>
+                    <th>
                         Imie
                     </th>
                     <th>
@@ -40,7 +43,10 @@
                         Doświadczenie
                     </th>
                 </tr>
-                <tr ng-repeat = "x in json | orderBy:'-age'">
+                <tr ng-repeat = "x in json " class="data" id="{{x.id}}">
+                    <td>
+                        {{x.id}}
+                    </td>
                     <td>
                         {{x.firstName}}
                     </td>
@@ -59,29 +65,265 @@
                 </tr>
             </table>
         </main>
+        <button onclick="idSort()">Sort Id</button>
+        <button onclick="nameSort()">Sort Imie</button>
+        <button onclick="surnameSort()">Sort Nazwisko</button>
+        <button onclick="dateSort()">Sort data</button>
+        <button onclick="funkcionSort()">Sort data</button>
+        <button onclick="experienceSort()">Sort exp</button>
+        <br />
+        <input type="text" oninput="nameFilter(this.value)" id="wantedFirstName">
+        <input type="text" oninput="surnameFilter(this.value)" id="wantedFirstName">
+        <select ng-controller="selectCtrl" ng-options="x for x in servicesFunctions">
+        </select>
         <script>
-        
+        function test(v){
+            var str = "dobrromir";
+            console.log(str.includes($("#wantedFirstName").val()));
+        }
         //variable
         var appName = "Service";
         var app = angular.module(appName, []);
-            //tests
-         
-         $.getJSON("https://raw.githubusercontent.com/ElderDrop/Projekt-Na-Sta--/master/sluzba.json",function(data){
-             json = data;
-            
-         });
+   
         //controllers
+        //This controller creats table
         app.controller("table",function($scope,$http){
+            //loads json file from github
            $http.get("https://raw.githubusercontent.com/ElderDrop/Projekt-Na-Sta--/master/sluzba.json").then(function(data){
-              return $scope.json = data.data;
-           });
-             
+               var list = [];
+               var begin = 0;
+               var pagination = 12;
+               for(var i = begin; i < pagination;i++){
+                   list.push(data.data[i]);
+               }
+              return $scope.json = list;
+           });    
         });
+        //TODO:Finish this contllorer
+        app.controller("selectCtrl",[data = $(".data").clone(),function($scope){
+            var servicesFunctions = [];
+            console.log(this.data);
+            var data = this.data;
+            servicesFunctions.push(data.get(0).children[4].innerText.trim());
+            for( var i = 1; i < data.length;i++ ){
+          
+            }
+            
+            return $scope.servicesFunctions = servicesFunctions;
+        }]);
 
+        //TODO: decribe all funcions and cut to exterlanl files
+        function nameFilter(v){
+            var persons = [];
+            var tableRows = [];
+            var data = $(".data").clone();
+            for(var i = 0; i < data.length;i++){    
+                tableRows.push(data.get(i));
+                persons.push(new Person(Number(tableRows[i].children[0].innerText.trim()),tableRows[i].children[1].innerText.trim(),tableRows[i].children[2].innerText.trim(),tableRows[i].children[3].innerText.trim(),tableRows[i].children[4].innerText.trim(),tableRows[i].children[5].innerText.trim()));
+                var str = persons[i].firstName;
+                str = str.toLowerCase();            
+                if(!str.includes(v)){
+                    $("#"+persons[i].id).fadeOut();
+                }else{
+                    $("#"+persons[i].id).fadeIn();
+                }
+            }
+            
+        }
+        function surnameFilter(v){
+            var persons = [];
+            var tableRows = [];
+            var data = $(".data").clone();
+            for(var i = 0; i < data.length;i++){    
+                tableRows.push(data.get(i));
+                persons.push(new Person(Number(tableRows[i].children[0].innerText.trim()),tableRows[i].children[1].innerText.trim(),tableRows[i].children[2].innerText.trim(),tableRows[i].children[3].innerText.trim(),tableRows[i].children[4].innerText.trim(),tableRows[i].children[5].innerText.trim()));
+                var str = persons[i].lastName;
+                str = str.toLowerCase();            
+                if(!str.includes(v)){
+                    $("#"+persons[i].id).fadeOut();
+                }else{
+                    $("#"+persons[i].id).fadeIn();
+                }
+            }
+            
+        }
+        function idSort(){
+            var persons = [];
+            var tableRows = [];
+            var data = $(".data").clone();
+            for(var i = 0; i < data.length;i++){    
+                tableRows.push(data.get(i));
+                persons.push(new Person(Number(tableRows[i].children[0].innerText.trim()),tableRows[i].children[1].innerText.trim(),tableRows[i].children[2].innerText.trim(),tableRows[i].children[3].innerText.trim(),tableRows[i].children[4].innerText.trim(),tableRows[i].children[5].innerText.trim()));
+            }
+            persons.sort(function(a, b){return a.id-b.id});
+            for(var i = 0; i < $(".data").length;i++){
+                $(".data").get(i).innerHTML = persons[i].creatRow().innerHTML;
+            }
+
+        }
+
+        function experienceSort(){
+            var persons = [];
+            var tableRows = [];
+            var data = $(".data").clone();
+            for(var i = 0; i < data.length;i++){    
+                tableRows.push(data.get(i));
+                persons.push(new Person(Number(tableRows[i].children[0].innerText.trim()),tableRows[i].children[1].innerText.trim(),tableRows[i].children[2].innerText.trim(),tableRows[i].children[3].innerText.trim(),tableRows[i].children[4].innerText.trim(),tableRows[i].children[5].innerText.trim()));
+            }
+            persons.sort(function(a, b){return a.experience-b.experience});
+            for(var i = 0; i < $(".data").length;i++){
+                $(".data").get(i).innerHTML = persons[i].creatRow().innerHTML;
+            }
+        }
+
+       function nameSort(){
+            var persons = [];
+            var tableRows = [];
+            var data = $(".data").clone();
+            for(var i = 0; i < data.length;i++){    
+                tableRows.push(data.get(i));
+                persons.push(new Person(Number(tableRows[i].children[0].innerText.trim()),tableRows[i].children[1].innerText.trim(),tableRows[i].children[2].innerText.trim(),tableRows[i].children[3].innerText.trim(),tableRows[i].children[4].innerText.trim(),tableRows[i].children[5].innerText.trim()));
+            }
+            persons.sort(function(a, b){return a.lastName.localeCompare(b.lastName)});
+            persons.sort(function(a, b){return a.firstName.localeCompare(b.firstName)});
+            for(var i = 0; i < $(".data").length;i++){
+                $(".data").get(i).innerHTML = persons[i].creatRow().innerHTML;
+            }
+        }
         
-         function test(){
-            console.log(json[0].firstName);
-         }
+        
+        function surnameSort(){
+            var persons = [];
+            var tableRows = [];
+            var data = $(".data").clone();
+            for(var i = 0; i < data.length;i++){         
+                tableRows.push(data.get(i));
+                persons.push(new Person(Number(tableRows[i].children[0].innerText.trim()),tableRows[i].children[1].innerText.trim(),tableRows[i].children[2].innerText.trim(),tableRows[i].children[3].innerText.trim(),tableRows[i].children[4].innerText.trim(),tableRows[i].children[5].innerText.trim()));
+            }
+            
+            persons.sort(function(a, b){return a.firstName.localeCompare(b.firstName)});
+            persons.sort(function(a, b){return a.lastName.localeCompare(b.lastName)});
+            for(var i = 0; i < $(".data").length;i++){
+                $(".data").get(i).innerHTML = persons[i].creatRow().innerHTML;
+            }
+        }
+        
+        function dateSort(){
+            var persons = [];
+            var tableRows = [];
+            var data = $(".data").clone();
+            for(var i = 0; i < data.length;i++){    
+                tableRows.push(data.get(i));
+                persons.push(new Person(Number(tableRows[i].children[0].innerText.trim()),tableRows[i].children[1].innerText.trim(),tableRows[i].children[2].innerText.trim(),tableRows[i].children[3].innerText.trim(),tableRows[i].children[4].innerText.trim(),tableRows[i].children[5].innerText.trim()));
+                //persons[i].makeDate();
+            }
+            persons.sort(function(a, b){return a.date.getTime()-b.date.getTime()});
+            for(var i = 0; i < $(".data").length;i++){
+                $(".data").get(i).innerHTML = persons[i].creatRow().innerHTML;
+            }
+        }
+        function funkcionSort(){
+            var persons = [];
+            var tableRows = [];
+            var data = $(".data").clone();
+            for(var i = 0; i < data.length;i++){    
+                tableRows.push(data.get(i));
+                persons.push(new Person(Number(tableRows[i].children[0].innerText.trim()),tableRows[i].children[1].innerText.trim(),tableRows[i].children[2].innerText.trim(),tableRows[i].children[3].innerText.trim(),tableRows[i].children[4].innerText.trim(),tableRows[i].children[5].innerText.trim()));
+            }
+            
+            persons.sort(function(a, b){return a.serviceFunction.localeCompare(b.serviceFunction)});
+            for(var i = 0; i < $(".data").length;i++){
+                $(".data").get(i).innerHTML = persons[i].creatRow().innerHTML;
+            }
+        }
+
+        function Person(id,firstName, lastName, dateOfBirth, serviceFunction,experience){
+            //variables
+            this.id = id;
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.dateOfBirth = dateOfBirth;
+            this.serviceFunction = serviceFunction;
+            this.experience = experience;   
+            this.date;
+
+            //konstruktor
+                var day = "";
+                var k = 0;
+                var month = "";
+                var year = "";
+                var hour = "";
+                var minute = "";
+                for( var i = 0; i < dateOfBirth.length;i++){
+                    if( k == 0 && dateOfBirth[i] != "."){
+                        day += dateOfBirth[i];
+                    }
+                    if( k == 0 && dateOfBirth[i] == '.'){
+                        k+=1;
+                        i++;
+                        if(day.length != 2 ){
+                            day = "0" + day;
+                        }
+                        
+                    }
+                    if( k == 1 && dateOfBirth[i] != '.'){
+                        month += dateOfBirth[i];
+                    }
+                    if( k == 1 && dateOfBirth[i] == '.'){
+                        i++
+                        k++;
+                        if( month.length != 2 ){
+                            month = "0" + month;
+                        }
+                        
+                    }
+                    
+                    if( k == 2 && dateOfBirth[i] != ' '){
+                        year += dateOfBirth[i];
+                    }
+                    if( k == 2 && dateOfBirth[i] == ' '){
+                        k++;
+                        i++;
+                        if( year.length != 4 ){
+                            year = "0" + year;
+                        }
+                    }
+                    
+                    if( k == 3 && dateOfBirth[i] != ':'){
+                        hour += dateOfBirth[i];
+                    }
+                    if( k == 3 && dateOfBirth[i] == ':'){
+                        k++;
+                        i++;
+                        if( hour.length != 2 ){
+                            hour = "0" + hour;
+                        }
+                    }
+                    
+                     if( k == 4 ){
+                        minute += dateOfBirth[i];
+                    }
+                    
+                }
+                
+                var date = new Date();
+                date.setFullYear(Number(year)-1,Number(month)-1,Number(day));
+                date.setHours(Number(hour));
+                date.setMinutes(Number(minute));
+                
+                this.date = date;
+            
+            this.creatRow = function(){
+                var row = $(".data").clone().get(1);
+                row.children[0].innerHTML = id;
+                row.children[1].innerHTML = firstName;
+                row.children[2].innerHTML = lastName;
+                row.children[3].innerHTML = dateOfBirth;
+                row.children[4].innerHTML = serviceFunction;
+                row.children[5].innerHTML = experience;
+                return row;
+            }
+        }
          
         </script>
     </body>
