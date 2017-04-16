@@ -9,3 +9,15 @@ table tr:nth-child(odd) {
 table tr:nth-child(even) {
   background-color: #ffffff;
 }
+.fadeByExp{
+  display: none !important;
+}
+.fadeByServ{
+  display: none !important;
+}
+.fadeByFirstName{
+  display: none !important;
+}
+.fadeByLastName{
+  display: none !important;
+}
