@@ -21,3 +21,6 @@ table tr:nth-child(even) {
 .fadeByLastName{
   display: none !important;
 }
+.fadeByTime{
+   display: none !important;
+}

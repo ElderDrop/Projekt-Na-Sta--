@@ -66,12 +66,12 @@
                 </tr>
             </table>
         </main>
-        <button onclick="idSort()">Sort Id</button>
-        <button onclick="nameSort()">Sort Imie</button>
-        <button onclick="surnameSort()">Sort Nazwisko</button>
-        <button onclick="dateSort()">Sort data</button>
-        <button onclick="funkcionSort()">Sort data</button>
-        <button onclick="experienceSort()">Sort exp</button>
+        <button onclick="sorting('id')">Sort Id</button>
+        <button onclick="sorting('firstName')">Sort Imie</button>
+        <button onclick="sorting('lastName')">Sort Nazwisko</button>
+        <button onclick="sorting('dateOfBirth')">Sort data</button>
+        <button onclick="sorting('serviceFunction')">Sort data</button>
+        <button onclick="sorting('experience')">Sort exp</button>
         <br />
         <input type="text" oninput="filtring()" id="wantedFirstName">
         <input type="text" oninput="filtring()" id="wantedLastName">
@@ -81,6 +81,7 @@
         <select  ng-model="experiencesOptions"  ng-options="x for x in experiences" id="experiencesOptions">      
         </select>
         </div>
+        <button onclick="resetDatepickers()">Reset</button>
         <div id="datepicker"></div>
         <div id="datepicker2"></div>
         <script src="jquery-ui-1.12.1/jquery-ui.min.js"></script>
@@ -90,26 +91,73 @@
                         minDate: new Date(1970 , 1 - 1, 1),
                         defaultDate: new Date(1980 , 1 - 1, 1),
                         changeMonth: true,
-                        changeYear: true
+                        changeYear: true,
+                        showButtonPanel: true
                         })
                  .on("change",function(){
-                     console.log(this.value);
+                     dateOne = new Date(this.value.substring(6,10),Number(this.value.substring(0,2))-1,Number(this.value.substring(3,5)),0,0,0);
+                     if(dateTwo != null){
+                        filtring();
+                     }
                  });
                   $( "#datepicker2" ).datepicker({
                         minDate: new Date(1970 , 1 - 1, 1),
                         defaultDate: new Date(1980 , 1 - 1, 1),
                         changeMonth: true,
-                        changeYear: true
+                        changeYear: true,
+                        showButtonPanel: true
                         })
                  .on("change",function(){
-                     console.log(this.value);
+                     dateTwo = new Date(this.value.substring(6,10),Number(this.value.substring(0,2))-1,Number(this.value.substring(3,5)),0,0,0);
+                     if(dateOne != null){
+                        filtring();
+                     }
                  });
             });
-        
+        function resetDatepickers(){
+             $( "#datepicker" ).datepicker( "destroy"  );
+             $( "#datepicker" ).datepicker({
+                        minDate: new Date(1970 , 1 - 1, 1),
+                        defaultDate: new Date(1980 , 1 - 1, 1),
+                        changeMonth: true,
+                        changeYear: true,
+                        showButtonPanel: true
+                        });
+             $( "#datepicker2" ).datepicker( "destroy"  );
+             $( "#datepicker2" ).datepicker({
+                        minDate: new Date(1970 , 1 - 1, 1),
+                        defaultDate: new Date(1980 , 1 - 1, 1),
+                        changeMonth: true,
+                        changeYear: true,
+                        showButtonPanel: true
+                        });
+            for(var i = 0;i < persons.length;i++){
+                $( "#" + persons[i].id ).removeClass("fadeByTime");
+            }
+        }
         //variable
         var appName = "Service";
         var app = angular.module(appName, []);
-   
+        var sort = [];
+        var persons = [];
+        var tableRows = [];
+        var idClasses = [];
+        var dateOne = null;
+        var dateTwo = null;
+        
+        //iniciation of variables
+        sort["id"] = 0;
+        sort["firstName"] = 0;
+        sort["lastName"] = 0;
+        sort["dateOfBirth"] = 0;
+        sort["serviceFunction"] = 0;
+        sort["experience"] = 0;
+        $.getJSON("https://raw.githubusercontent.com/ElderDrop/Projekt-Na-Sta--/master/sluzba.json",function( json ){
+            for( var i = 0; i < json.length;i++ ){
+                var x = json[i];
+                persons.push( new Person(x.id,x.firstName,x.lastName,x.dateOfBirth,x.function,x.experience) );
+            }
+        });
         //controllers
         //This controller creats table
         app.controller("table",function($scope,$http){
@@ -119,7 +167,7 @@
                var begin = 0;
                var pagination = 12;
                for(var i = begin; i < pagination;i++){
-                   list.push(data.data[i]);
+                   list.push( data.data[i] );
                }
               return $scope.json = list;
            });    
@@ -146,12 +194,15 @@
             });
         });
 
+        //functions
         function filtring(){
             
                 var data = $(".data").clone();
-                console.log(data);
-                var persons = [];
-                var tableRows = [];
+                if(dateTwo < dateOne){
+                    var tmp = dateOne;
+                    dateOne = dateTwo;
+                    dateTwo = tmp;
+                }
                 for( var i = 0; i < data.length; i++ ){
                     var parent = data.get(i);
                     var person = new Person( Number(parent.children[0].innerText.trim()),parent.children[1].innerText.trim(),parent.children[2].innerText.trim(),parent.children[3].innerText.trim(),parent.children[4].innerText.trim(),parent.children[5].innerText.trim());
@@ -233,6 +284,19 @@
                             $( "#" + person.id ).fadeOut().addClass("fadeByLastName");
                         }
                     }
+                    var tmpDate = new Date(person.date.getFullYear(),person.date.getMonth(),person.date.getDay(),0,0,0,0);
+                    if(dateOne.getTime() <= tmpDate.getTime() && dateTwo.getTime() >= tmpDate.getTime()){
+                            if(!$( "#" + person.id ).hasClass(/fadeBy/)){
+                                $( "#" + person.id ).fadeIn();
+                            }
+                            $( "#" + person.id ).removeClass("fadeByTime");
+                        }else{
+                            $( "#" + person.id ).fadeOut().addClass("fadeByTime");
+                        }
+                    
+                    
+                    
+                    
                 }
         }
         
@@ -250,138 +314,94 @@
         $("#servicesFunctionsOptions").change(function(){
             filtring();
         });
-        //TODO: decribe all funcions and cut to exterlanl files
-        function nameFilter(v){
-            var persons = [];
-            var tableRows = [];
-            var data = $(".data").clone();
-            for( var i = 0; i < data.length;i++ ){    
-                tableRows.push(data.get(i));
-                persons.push(new Person(Number(tableRows[i].children[0].innerText.trim()),tableRows[i].children[1].innerText.trim(),tableRows[i].children[2].innerText.trim(),tableRows[i].children[3].innerText.trim(),tableRows[i].children[4].innerText.trim(),tableRows[i].children[5].innerText.trim()));
-                var str = persons[i].firstName;
-                str = str.toLowerCase();            
-                if( !str.includes(v) ){
-                    $( "#"+persons[i].id ).fadeOut();
-                }else{
-                    $( "#"+persons[i].id ).fadeIn();
-                }
-            }
-            
-        }
-        function surnameFilter(v){
-            var persons = [];
-            var tableRows = [];
-            var data = $(".data").clone();
-            for( var i = 0; i < data.length;i++ ){    
-                tableRows.push(data.get(i));
-                persons.push(new Person(Number(tableRows[i].children[0].innerText.trim()),tableRows[i].children[1].innerText.trim(),tableRows[i].children[2].innerText.trim(),tableRows[i].children[3].innerText.trim(),tableRows[i].children[4].innerText.trim(),tableRows[i].children[5].innerText.trim()));
-                var str = persons[i].lastName;
-                str = str.toLowerCase();            
-                if( !str.includes(v) ){
-                    $( "#"+persons[i].id ).fadeOut();
-                }else{
-                    $( "#"+persons[i].id ).fadeIn();
-                }
-            }
-            
-        }
-        function idSort(){
-            var persons = [];
-            var tableRows = [];
-            var data = $(".data").clone();
-            for(var i = 0; i < data.length;i++){    
-                tableRows.push(data.get(i));
-                persons.push(new Person(Number(tableRows[i].children[0].innerText.trim()),tableRows[i].children[1].innerText.trim(),tableRows[i].children[2].innerText.trim(),tableRows[i].children[3].innerText.trim(),tableRows[i].children[4].innerText.trim(),tableRows[i].children[5].innerText.trim()));
-            }
-            persons.sort(function(a, b){return a.id-b.id});
-            for(var i = 0; i < $(".data").length;i++){
-                $(".data").get(i).innerHTML = persons[i].creatRow().innerHTML;
-                $(".data").get(i).id = persons[i].id;
-            }
 
-        }
-
-        function experienceSort(){
-            var persons = [];
-            var tableRows = [];
-            var data = $(".data").clone();
-            for(var i = 0; i < data.length;i++){    
-                tableRows.push(data.get(i));
-                persons.push(new Person(Number(tableRows[i].children[0].innerText.trim()),tableRows[i].children[1].innerText.trim(),tableRows[i].children[2].innerText.trim(),tableRows[i].children[3].innerText.trim(),tableRows[i].children[4].innerText.trim(),tableRows[i].children[5].innerText.trim()));
-            }
-            persons.sort(function(a, b){return a.experience-b.experience});
-            for(var i = 0; i < $(".data").length;i++){
-                if(!$( "#" + persons[i].id ).hasClass(/fadeBy/)){
-                    $(".data").get(i).innerHTML = persons[i].creatRow().innerHTML;
-                    $(".data").get(i).id = persons[i].id;
-                }
-            }
-        }
-
-       function nameSort(){
-            var persons = [];
-            var tableRows = [];
-            var data = $(".data").clone();
-            for(var i = 0; i < data.length;i++){    
-                tableRows.push(data.get(i));
-                persons.push(new Person(Number(tableRows[i].children[0].innerText.trim()),tableRows[i].children[1].innerText.trim(),tableRows[i].children[2].innerText.trim(),tableRows[i].children[3].innerText.trim(),tableRows[i].children[4].innerText.trim(),tableRows[i].children[5].innerText.trim()));
-            }
-            persons.sort(function(a, b){return a.lastName.localeCompare(b.lastName)});
-            persons.sort(function(a, b){return a.firstName.localeCompare(b.firstName)});
-            for(var i = 0; i < $(".data").length;i++){
-                $(".data").get(i).innerHTML = persons[i].creatRow().innerHTML;
-                $(".data").get(i).id = persons[i].id;
-            }
-        }
         
         
-        function surnameSort(){
-            var persons = [];
-            var tableRows = [];
-            var data = $(".data").clone();
-            for(var i = 0; i < data.length;i++){         
-                tableRows.push(data.get(i));
-                persons.push(new Person(Number(tableRows[i].children[0].innerText.trim()),tableRows[i].children[1].innerText.trim(),tableRows[i].children[2].innerText.trim(),tableRows[i].children[3].innerText.trim(),tableRows[i].children[4].innerText.trim(),tableRows[i].children[5].innerText.trim()));
+        //1 asc, 2 desc, 0 none
+        function sorting(typeOfSort){
+            incrementSort(typeOfSort)
+            if( typeOfSort == "id" ){
+                if( sort[typeOfSort] == 1 ){
+                     persons.sort(function( a, b ){return a.id - b.id});
+                }
+                if( sort[typeOfSort] == 2 ){
+                     persons.sort(function( a, b ){return b.id - a.id});
+                }
+            }        
+            if( typeOfSort == "firstName" ){
+                if( sort[typeOfSort] == 1 ){
+                    persons.sort(function( a, b ){return a.lastName.localeCompare(b.lastName)});
+                    persons.sort(function( a, b ){return a.firstName.localeCompare(b.firstName)});
+                }
+                if( sort[typeOfSort] == 2 ){
+                    persons.sort(function( a, b ){return b.lastName.localeCompare(a.lastName)});
+                    persons.sort(function( a, b ){return b.firstName.localeCompare(a.firstName)});
+                }
+            }
+            if( typeOfSort == "firstName" ){
+                if( sort[typeOfSort] == 1 ){
+                    persons.sort(function( a, b ){return a.lastName.localeCompare(b.lastName)});
+                    persons.sort(function( a, b ){return a.firstName.localeCompare(b.firstName)});
+                }
+                if( sort[typeOfSort] == 2 ){
+                    persons.sort(function( a, b ){return b.lastName.localeCompare( a.lastName )});
+                    persons.sort(function( a, b ){return b.firstName.localeCompare( a.firstName )});
+                }
+            }
+            if( typeOfSort == "lastName" ){
+                if( sort[typeOfSort] == 1 ){
+                    persons.sort( function( a, b ){return a.firstName.localeCompare(b.firstName)});
+                    persons.sort( function( a, b ){return a.lastName.localeCompare(b.lastName)});
+                }
+                if( sort[typeOfSort] == 2 ){              
+                    persons.sort( function( a, b ){return b.firstName.localeCompare(a.firstName)});
+                    persons.sort( function( a, b ){return b.lastName.localeCompare(a.lastName)});
+                }
+            }
+            if( typeOfSort == "dateOfBirth" ){
+                if( sort[typeOfSort] == 1 ){
+                    persons.sort( function( a, b ){ return a.date.getTime() - b.date.getTime()});
+                }
+                if( sort[typeOfSort] == 2 ){
+                    persons.sort( function( a, b ){ return b.date.getTime() - a.date.getTime()});
+                }
+            }
+            if( typeOfSort == "serviceFunction" ){
+                if( sort[typeOfSort] == 1 ){
+                    persons.sort(function( a, b ){return a.serviceFunction.localeCompare(b.serviceFunction)});
+                }
+                if( sort[typeOfSort] == 2 ){
+                    persons.sort(function( a, b ){return b.serviceFunction.localeCompare(a.serviceFunction)});
+                }
+            }
+            if( typeOfSort == "experience" ){
+                if( sort[typeOfSort] == 1 ){
+                    persons.sort(function( a, b ){return a.experience-b.experience});
+                }
+                if( sort[typeOfSort] == 2 ){
+                    persons.sort(function( a, b ){return b.experience-a.experience});
+                }
+            }
+         
+            for(var i = 0; i < persons.length;i++){
+                  idClasses[persons[i].id] = $( "#" + persons[i].id ).attr("class");
             }
             
-            persons.sort(function(a, b){return a.firstName.localeCompare(b.firstName)});
-            persons.sort(function(a, b){return a.lastName.localeCompare(b.lastName)});
-            for(var i = 0; i < $(".data").length;i++){
-                $(".data").get(i).innerHTML = persons[i].creatRow().innerHTML;
-                $(".data").get(i).id = persons[i].id;
-            }
-        }
-        
-        function dateSort(){
-            var persons = [];
-            var tableRows = [];
-            var data = $(".data").clone();
-            for(var i = 0; i < data.length;i++){    
-                tableRows.push(data.get(i));
-                persons.push(new Person(Number(tableRows[i].children[0].innerText.trim()),tableRows[i].children[1].innerText.trim(),tableRows[i].children[2].innerText.trim(),tableRows[i].children[3].innerText.trim(),tableRows[i].children[4].innerText.trim(),tableRows[i].children[5].innerText.trim()));
-            }
-            persons.sort(function(a, b){return a.date.getTime()-b.date.getTime()});
-            for(var i = 0; i < $(".data").length;i++){
-                $(".data").get(i) = persons[i].creatRow();
-                $(".data").get(i).id = persons[i].id;
-            }
-        }
-        function funkcionSort(){
-            var persons = [];
-            var tableRows = [];
-            var data = $(".data").clone();
-            for(var i = 0; i < data.length;i++){    
-                tableRows.push(data.get(i));
-                persons.push(new Person(Number(tableRows[i].children[0].innerText.trim()),tableRows[i].children[1].innerText.trim(),tableRows[i].children[2].innerText.trim(),tableRows[i].children[3].innerText.trim(),tableRows[i].children[4].innerText.trim(),tableRows[i].children[5].innerText.trim()));
-            }
-            
-            persons.sort(function(a, b){return a.serviceFunction.localeCompare(b.serviceFunction)});
-            for(var i = 0; i < $(".data").length;i++){
-                $(".data").get(i).innerHTML = persons[i].creatRow().innerHTML;
-                $(".data").get(i).id = persons[i].id;
-            }
-        }
+            for(var i = 0; i < persons.length;i++){
+                    $(".data").get(i).replaceWith(persons[i].creatRow());
+                    $( "#" + persons[i].id )[0] = persons[i].id;
+                    $( "#" + persons[i].id ).attr("class",'').addClass(idClasses[persons[i].id]);
 
+            }
+
+        }
+        function incrementSort(typeOfSort){
+             if( sort[typeOfSort] == 2 ){
+                sort[typeOfSort] = 0;
+            }else{
+                sort[typeOfSort]++;
+            }
+        }
         function Person(id,firstName, lastName, dateOfBirth, serviceFunction,experience){
             //variables
             this.id = id;
@@ -468,6 +488,9 @@
                 row.children[4].innerHTML = serviceFunction;
                 row.children[5].innerHTML = experience;
                 row.id = this.id;
+                //if(this.fade == true){
+              //      row.addClass("fadeBy");
+               // }
                 return row;
             }
         }
