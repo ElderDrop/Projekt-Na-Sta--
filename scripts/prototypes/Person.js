@@ -6,6 +6,7 @@ function Person(id,firstName, lastName, dateOfBirth, serviceFunction,experience)
             this.dateOfBirth = dateOfBirth;
             this.serviceFunction = serviceFunction;
             this.experience = experience;   
+            this.visable = true;
             this.date;
 
             //konstruktor

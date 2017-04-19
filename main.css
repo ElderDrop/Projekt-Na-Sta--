@@ -24,3 +24,10 @@ table tr:nth-child(even) {
 .fadeByTime{
    display: none !important;
 }
+main{
+  width: 503px;
+  margin: auto;
+}
+#pagetation{
+  float: right;
+}

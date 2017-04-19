@@ -25,22 +25,22 @@
             
             <table ng-controller = "table" id = "serviceList">
                 <tr>
-                    <th>
+                    <th  onclick="sorting('id')" >
                         Id
                     </th>
-                    <th>
+                    <th  onclick="sorting('firstName')">
                         Imie
                     </th>
-                    <th>
+                    <th onclick="sorting('lastName')">
                         Nazwisko
                     </th>
-                    <th>
+                    <th onclick="sorting('dateOfBirth')">
                         Data Urodzenia
                     </th>
-                    <th>
+                    <th onclick="sorting('serviceFunction')">
                         Funkcja
                     </th>
-                    <th>
+                    <th onclick="sorting('experience')">
                         Doświadczenie
                     </th>
                 </tr>
@@ -65,19 +65,22 @@
                     </td>
                 </tr>
             </table>
+            <div id = "pagetation">
+        </div>
         </main>
         <br />
-        <div id = "pagetation">
-        </div>
-        <button onclick="sorting('id')">Sort Id</button>
-        <button onclick="sorting('firstName')">Sort Imie</button>
-        <button onclick="sorting('lastName')">Sort Nazwisko</button>
-        <button onclick="sorting('dateOfBirth')">Sort data</button>
-        <button onclick="sorting('serviceFunction')">Sort data</button>
-        <button onclick="sorting('experience')">Sort exp</button>
+        
+        <!--<div id="sort">
+            <button onclick="sorting('id')">Sort Id</button>
+            <button onclick="sorting('firstName')">Sort Imie</button>
+            <button onclick="sorting('lastName')">Sort Nazwisko</button>
+            <button onclick="sorting('dateOfBirth')">Sort data</button>
+            <button onclick="sorting('serviceFunction')">Sort data</button>
+            <button onclick="sorting('experience')">Sort exp</button>
+        </div>-->
         <br />
-        <input type="text" oninput="filtring()" id="wantedFirstName">
-        <input type="text" oninput="filtring()" id="wantedLastName">
+        <input type="text" oninput="filtring()" id="wantedFirstName" placeholder="Filtr Imion">
+        <input type="text" oninput="filtring()" id="wantedLastName" placeholder="Filtr Nazwisk">
         <div ng-controller="selectCtrl">
         <select  ng-model="serviceFunctions"  ng-options="x for x in servicesFunctions" id="servicesFunctionsOptions">
         </select>
@@ -126,6 +129,8 @@
         var dateTwo = null;
         var pages = 0;
         var page = 1;
+        var available;
+        var last;
         //iniciation of variables
         sort["id"] = 0;
         sort["firstName"] = 0;
@@ -167,19 +172,34 @@
             if( end > persons.length ){
                 end = persons.length;
             }
-            console.log(end);
-            table.length = 0;
-            
+            available = persons.length;
+            var lastPosition;
             table = [];
-            console.log(value + " , "+end);
             for( var i = value ; i < end;i++ ){
-               table.push(persons[i]);
+                
+                if( persons[i].visable ){
+                    table.push(persons[i]);
+                }else{
+                    available--;
+                    end++;
+                    if( end == persons.length )
+                    {
+                        break;
+                    }
+                }
+                lastPosition = i;
             }
-            console.log(table);
             for( var i = 0; i < table.length;i++ ){
                 $("#serviceList").append(table[i].creatRow());
                 $("#" + table[i].id).addClass(idClasses[table.id]);
             }
+            available = 0;
+            for( var i = lastPosition; i < persons[i].length;i++){
+                if( persons[i].visable ){
+                    available += 1;
+                }
+            }
+            //filtring();
         }
         
         //controllers
@@ -227,25 +247,32 @@
                     dateOne = dateTwo;
                     dateTwo = tmp;
                 }
-                for( var i = 0; i < data.length; i++ ){
-                    var parent = data.get(i);
-                    var person = new Person( Number(parent.children[0].innerText.trim()),parent.children[1].innerText.trim(),parent.children[2].innerText.trim(),parent.children[3].innerText.trim(),parent.children[4].innerText.trim(),parent.children[5].innerText.trim());
+                //for( var i = 0; i < data.length; i++ ){
+                    //var parent = data.get(i);
+                    //var person = new Person( Number(parent.children[0].innerText.trim()),parent.children[1].innerText.trim(),parent.children[2].innerText.trim(),parent.children[3].innerText.trim(),parent.children[4].innerText.trim(),parent.children[5].innerText.trim());
+                for(var i = 0; i < persons.length;i++){
+                    var person = persons[i];
                     var value = $("#experiencesOptions").val();
                     value = value.substring(7,value.length)
                     if(value == "none"){
                         if(!$( "#" + person.id ).hasClass(/fadeBy/)){
                             if( $( "#" + person.id ).hasClass("fadeByExp") ){
                                 $( "#" + person.id ).fadeIn();
+                                person.visable = true;
                             }
                             $( "#" + person.id ).removeClass("fadeByExp");
+                            
                          }
                     }else{
                         if( person.experience != value ){
                             $( "#" + person.id ).fadeOut().addClass("fadeByExp");
+                            person.visable = false;
+                            console.log("k")
                         }else{
                             if(!$( "#" + person.id ).hasClass(/fadeBy/)){
                                 $( "#" + person.id ).fadeIn();
                                 $( "#" + person.id ).removeClass("fadeByExp");
+                                person.visable = true;
                             }
                         }
                     
@@ -258,16 +285,20 @@
                       if(!$( "#" + person.id ).hasClass(/fadeBy/)){
                             if( $( "#" + person.id ).hasClass("fadeByServ") ){
                                 $( "#" + person.id ).fadeIn();
+                                person.visable = true;
                             }
                             $( "#" + person.id ).removeClass("fadeByServ");
+                            
                          }
                     }else{
                         if( person.serviceFunction != value ){
                             $( "#" + person.id ).fadeOut().addClass("fadeByServ");
+                            person.visable = false;
                         }else{
                             if(!$( "#" + person.id ).hasClass(/fadeBy/)){
                                 $( "#" + person.id ).fadeIn();
                                 $( "#" + person.id ).removeClass("fadeByServ");
+                                person.visable = true;
                             }
                         }
                     
@@ -324,6 +355,8 @@
                     
                     
                 }
+                organiseTable(1);
+                
         }
         
         function isInside(str, tab){
@@ -345,104 +378,6 @@
         
         
         
-        function Person(id,firstName, lastName, dateOfBirth, serviceFunction,experience){
-            //variables
-            this.id = id;
-            this.firstName = firstName;
-            this.lastName = lastName;
-            this.dateOfBirth = dateOfBirth;
-            this.serviceFunction = serviceFunction;
-            this.experience = experience;   
-            this.date;
-
-            //konstruktor
-                var day = "";
-                var k = 0;
-                var month = "";
-                var year = "";
-                var hour = "";
-                var minute = "";
-                for( var i = 0; i < dateOfBirth.length;i++){
-                    if( k == 0 && dateOfBirth[i] != "."){
-                        day += dateOfBirth[i];
-                    }
-                    if( k == 0 && dateOfBirth[i] == '.'){
-                        k+=1;
-                        i++;
-                        if(day.length != 2 ){
-                            day = "0" + day;
-                        }
-                        
-                    }
-                    if( k == 1 && dateOfBirth[i] != '.'){
-                        month += dateOfBirth[i];
-                    }
-                    if( k == 1 && dateOfBirth[i] == '.'){
-                        i++
-                        k++;
-                        if( month.length != 2 ){
-                            month = "0" + month;
-                        }
-                        
-                    }
-                    
-                    if( k == 2 && dateOfBirth[i] != ' '){
-                        year += dateOfBirth[i];
-                    }
-                    if( k == 2 && dateOfBirth[i] == ' '){
-                        k++;
-                        i++;
-                        if( year.length != 4 ){
-                            year = "0" + year;
-                        }
-                    }
-                    
-                    if( k == 3 && dateOfBirth[i] != ':'){
-                        hour += dateOfBirth[i];
-                    }
-                    if( k == 3 && dateOfBirth[i] == ':'){
-                        k++;
-                        i++;
-                        if( hour.length != 2 ){
-                            hour = "0" + hour;
-                        }
-                    }
-                    
-                     if( k == 4 ){
-                        minute += dateOfBirth[i];
-                    }
-                    
-                }
-                
-                var date = new Date();
-                date.setFullYear(Number(year)-1,Number(month)-1,Number(day));
-                date.setHours(Number(hour));
-                date.setMinutes(Number(minute));
-                
-                this.date = date;
-            
-            this.creatRow = function(){
-                
-                /*var row = $(".data").clone().get(1);
-                row.children[0].innerHTML = id;
-                row.children[1].innerHTML = firstName;
-                row.children[2].innerHTML = lastName;
-                row.children[3].innerHTML = dateOfBirth;
-                row.children[4].innerHTML = serviceFunction;
-                row.children[5].innerHTML = experience;
-                row.id = this.id;
-                //if(this.fade == true){
-              //      row.addClass("fadeBy");
-               // }*/
-               //var row = '<tr id="'+ this.id +'"><td>1</td><td>'+ this.firstName +'</td><td>'+ this.lastName +'</td><td>'+ this.dateOfBirth +'</td><td>'+ this.serviceFunction +'</td><td>'+ this.experience +'</td></tr>';
-                var row = document.createElement("tr");
-                row.innerHTML = '<td>'+ this.id +'</td><td>'+ this.firstName +'</td><td>'+ this.lastName +'</td><td>'+ this.dateOfBirth +'</td><td>'+ this.serviceFunction +'</td><td>'+ this.experience +'</td>';
-                row.id = this.id;
-                row.className += "data";
-                return row;
-            }
-        }
-         
         </script>
     </body>
 </html>
