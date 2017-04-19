@@ -23,7 +23,7 @@
         </header>
         <main>
             
-            <table ng-controller = "table" >
+            <table ng-controller = "table" id = "serviceList">
                 <tr>
                     <th>
                         Id
@@ -66,6 +66,9 @@
                 </tr>
             </table>
         </main>
+        <br />
+        <div id = "pagetation">
+        </div>
         <button onclick="sorting('id')">Sort Id</button>
         <button onclick="sorting('firstName')">Sort Imie</button>
         <button onclick="sorting('lastName')">Sort Nazwisko</button>
@@ -85,35 +88,11 @@
         <div id="datepicker"></div>
         <div id="datepicker2"></div>
         <script src="jquery-ui-1.12.1/jquery-ui.min.js"></script>
+        <script src="scripts/prototypes/Person.js"></script>
+        <script src="scripts/datepickerScript.js"></script>
+        <script src="scripts/sorting.js"></script>
         <script>
-            $( function() {
-                 $( "#datepicker" ).datepicker({
-                        minDate: new Date(1970 , 1 - 1, 1),
-                        defaultDate: new Date(1980 , 1 - 1, 1),
-                        changeMonth: true,
-                        changeYear: true,
-                        showButtonPanel: true
-                        })
-                 .on("change",function(){
-                     dateOne = new Date(this.value.substring(6,10),Number(this.value.substring(0,2))-1,Number(this.value.substring(3,5)),0,0,0);
-                     if(dateTwo != null){
-                        filtring();
-                     }
-                 });
-                  $( "#datepicker2" ).datepicker({
-                        minDate: new Date(1970 , 1 - 1, 1),
-                        defaultDate: new Date(1980 , 1 - 1, 1),
-                        changeMonth: true,
-                        changeYear: true,
-                        showButtonPanel: true
-                        })
-                 .on("change",function(){
-                     dateTwo = new Date(this.value.substring(6,10),Number(this.value.substring(0,2))-1,Number(this.value.substring(3,5)),0,0,0);
-                     if(dateOne != null){
-                        filtring();
-                     }
-                 });
-            });
+            
         function resetDatepickers(){
              $( "#datepicker" ).datepicker( "destroy"  );
              $( "#datepicker" ).datepicker({
@@ -141,10 +120,12 @@
         var sort = [];
         var persons = [];
         var tableRows = [];
+        var table = [];
         var idClasses = [];
         var dateOne = null;
         var dateTwo = null;
-        
+        var pages = 0;
+        var page = 1;
         //iniciation of variables
         sort["id"] = 0;
         sort["firstName"] = 0;
@@ -153,16 +134,59 @@
         sort["serviceFunction"] = 0;
         sort["experience"] = 0;
         $.getJSON("https://raw.githubusercontent.com/ElderDrop/Projekt-Na-Sta--/master/sluzba.json",function( json ){
+            var tmp = 1;
+            var k = 5;
+            pages++;
+            $("#pagetation").append("<button class='pagnation' onclick='organiseTable("+ pages +")' value='"+ pages + "'>1</button>");
             for( var i = 0; i < json.length;i++ ){
                 var x = json[i];
                 persons.push( new Person(x.id,x.firstName,x.lastName,x.dateOfBirth,x.function,x.experience) );
+                tmp++;
+                if(i < 5){
+                    table.push(persons[i]);
+                }
+                if(tmp == k ){
+                    pages++;
+                    k += k;
+                    $("#pagetation").append("<button class='pagnation' onclick='organiseTable("+ pages +")' value="+ pages +">"+ pages +"</button>");
+                }   
+            }
+            
+            for( var i = 0; i < table.length;i++ ){
+                $("#serviceList").append(table[i].creatRow());
             }
         });
+        
+
+
+        function organiseTable(value){
+            $(".data").remove();
+            page = value;
+            var end = value*5;
+            value = (value-1)*5;
+            if( end > persons.length ){
+                end = persons.length;
+            }
+            console.log(end);
+            table.length = 0;
+            
+            table = [];
+            console.log(value + " , "+end);
+            for( var i = value ; i < end;i++ ){
+               table.push(persons[i]);
+            }
+            console.log(table);
+            for( var i = 0; i < table.length;i++ ){
+                $("#serviceList").append(table[i].creatRow());
+                $("#" + table[i].id).addClass(idClasses[table.id]);
+            }
+        }
+        
         //controllers
         //This controller creats table
         app.controller("table",function($scope,$http){
             //loads json file from github
-           $http.get("https://raw.githubusercontent.com/ElderDrop/Projekt-Na-Sta--/master/sluzba.json").then(function(data){
+           /*$http.get("https://raw.githubusercontent.com/ElderDrop/Projekt-Na-Sta--/master/sluzba.json").then(function(data){
                var list = [];
                var begin = 0;
                var pagination = 12;
@@ -170,10 +194,10 @@
                    list.push( data.data[i] );
                }
               return $scope.json = list;
-           });    
+           });    */
         });
         
-        app.controller("selectCtrl",function($scope,$http){
+       app.controller("selectCtrl",function($scope,$http){
             $http.get("https://raw.githubusercontent.com/ElderDrop/Projekt-Na-Sta--/master/sluzba.json").then(function(data){
                var servicesFunctions = [];
                var experiences = [];
@@ -285,14 +309,16 @@
                         }
                     }
                     var tmpDate = new Date(person.date.getFullYear(),person.date.getMonth(),person.date.getDay(),0,0,0,0);
-                    if(dateOne.getTime() <= tmpDate.getTime() && dateTwo.getTime() >= tmpDate.getTime()){
-                            if(!$( "#" + person.id ).hasClass(/fadeBy/)){
-                                $( "#" + person.id ).fadeIn();
+                    if(dateOne != null && dateTwo != null){
+                        if(dateOne.getTime() <= tmpDate.getTime() && dateTwo.getTime() >= tmpDate.getTime()){
+                                if(!$( "#" + person.id ).hasClass(/fadeBy/)){
+                                    $( "#" + person.id ).fadeIn();
+                                }
+                                $( "#" + person.id ).removeClass("fadeByTime");
+                            }else{
+                                $( "#" + person.id ).fadeOut().addClass("fadeByTime");
                             }
-                            $( "#" + person.id ).removeClass("fadeByTime");
-                        }else{
-                            $( "#" + person.id ).fadeOut().addClass("fadeByTime");
-                        }
+                    }
                     
                     
                     
@@ -317,91 +343,8 @@
 
         
         
-        //1 asc, 2 desc, 0 none
-        function sorting(typeOfSort){
-            incrementSort(typeOfSort)
-            if( typeOfSort == "id" ){
-                if( sort[typeOfSort] == 1 ){
-                     persons.sort(function( a, b ){return a.id - b.id});
-                }
-                if( sort[typeOfSort] == 2 ){
-                     persons.sort(function( a, b ){return b.id - a.id});
-                }
-            }        
-            if( typeOfSort == "firstName" ){
-                if( sort[typeOfSort] == 1 ){
-                    persons.sort(function( a, b ){return a.lastName.localeCompare(b.lastName)});
-                    persons.sort(function( a, b ){return a.firstName.localeCompare(b.firstName)});
-                }
-                if( sort[typeOfSort] == 2 ){
-                    persons.sort(function( a, b ){return b.lastName.localeCompare(a.lastName)});
-                    persons.sort(function( a, b ){return b.firstName.localeCompare(a.firstName)});
-                }
-            }
-            if( typeOfSort == "firstName" ){
-                if( sort[typeOfSort] == 1 ){
-                    persons.sort(function( a, b ){return a.lastName.localeCompare(b.lastName)});
-                    persons.sort(function( a, b ){return a.firstName.localeCompare(b.firstName)});
-                }
-                if( sort[typeOfSort] == 2 ){
-                    persons.sort(function( a, b ){return b.lastName.localeCompare( a.lastName )});
-                    persons.sort(function( a, b ){return b.firstName.localeCompare( a.firstName )});
-                }
-            }
-            if( typeOfSort == "lastName" ){
-                if( sort[typeOfSort] == 1 ){
-                    persons.sort( function( a, b ){return a.firstName.localeCompare(b.firstName)});
-                    persons.sort( function( a, b ){return a.lastName.localeCompare(b.lastName)});
-                }
-                if( sort[typeOfSort] == 2 ){              
-                    persons.sort( function( a, b ){return b.firstName.localeCompare(a.firstName)});
-                    persons.sort( function( a, b ){return b.lastName.localeCompare(a.lastName)});
-                }
-            }
-            if( typeOfSort == "dateOfBirth" ){
-                if( sort[typeOfSort] == 1 ){
-                    persons.sort( function( a, b ){ return a.date.getTime() - b.date.getTime()});
-                }
-                if( sort[typeOfSort] == 2 ){
-                    persons.sort( function( a, b ){ return b.date.getTime() - a.date.getTime()});
-                }
-            }
-            if( typeOfSort == "serviceFunction" ){
-                if( sort[typeOfSort] == 1 ){
-                    persons.sort(function( a, b ){return a.serviceFunction.localeCompare(b.serviceFunction)});
-                }
-                if( sort[typeOfSort] == 2 ){
-                    persons.sort(function( a, b ){return b.serviceFunction.localeCompare(a.serviceFunction)});
-                }
-            }
-            if( typeOfSort == "experience" ){
-                if( sort[typeOfSort] == 1 ){
-                    persons.sort(function( a, b ){return a.experience-b.experience});
-                }
-                if( sort[typeOfSort] == 2 ){
-                    persons.sort(function( a, b ){return b.experience-a.experience});
-                }
-            }
-         
-            for(var i = 0; i < persons.length;i++){
-                  idClasses[persons[i].id] = $( "#" + persons[i].id ).attr("class");
-            }
-            
-            for(var i = 0; i < persons.length;i++){
-                    $(".data").get(i).replaceWith(persons[i].creatRow());
-                    $( "#" + persons[i].id )[0] = persons[i].id;
-                    $( "#" + persons[i].id ).attr("class",'').addClass(idClasses[persons[i].id]);
-
-            }
-
-        }
-        function incrementSort(typeOfSort){
-             if( sort[typeOfSort] == 2 ){
-                sort[typeOfSort] = 0;
-            }else{
-                sort[typeOfSort]++;
-            }
-        }
+        
+        
         function Person(id,firstName, lastName, dateOfBirth, serviceFunction,experience){
             //variables
             this.id = id;
@@ -480,7 +423,7 @@
             
             this.creatRow = function(){
                 
-                var row = $(".data").clone().get(1);
+                /*var row = $(".data").clone().get(1);
                 row.children[0].innerHTML = id;
                 row.children[1].innerHTML = firstName;
                 row.children[2].innerHTML = lastName;
@@ -490,7 +433,12 @@
                 row.id = this.id;
                 //if(this.fade == true){
               //      row.addClass("fadeBy");
-               // }
+               // }*/
+               //var row = '<tr id="'+ this.id +'"><td>1</td><td>'+ this.firstName +'</td><td>'+ this.lastName +'</td><td>'+ this.dateOfBirth +'</td><td>'+ this.serviceFunction +'</td><td>'+ this.experience +'</td></tr>';
+                var row = document.createElement("tr");
+                row.innerHTML = '<td>'+ this.id +'</td><td>'+ this.firstName +'</td><td>'+ this.lastName +'</td><td>'+ this.dateOfBirth +'</td><td>'+ this.serviceFunction +'</td><td>'+ this.experience +'</td>';
+                row.id = this.id;
+                row.className += "data";
                 return row;
             }
         }
