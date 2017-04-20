@@ -26,6 +26,7 @@
                 <h1>
                     Tabela słuzby
                 </h1>
+                <a href="#" class="floatRight" data-toggle="tooltip" data-placement="top" title="Kliknij w tytuł kolumny np: Imie by posortować" data-placement="top"><span class="glyphicon glyphicon-info-sign"></span></a>
                 <table id = "serviceList" class="table table-striped">
                     <tr>
                         <th  onclick="sorting('id')" >
@@ -59,11 +60,14 @@
                 </h1>
                 <div class="row ">
                 <div class="col-sm-6">
+                    
                     <div id="namesFilters" class="filters">
+                        <a href="#" data-toggle="tooltip" data-placement="top" title="Wpisz część lub całość imienia bądż nazwiska by filtrować" data-placement="top"><span class="glyphicon glyphicon-info-sign"></span></a>
                         <input type="text" class="form-control" oninput="filtring()" id="wantedFirstName" placeholder="Filtr Imion">
                         <input type="text" class="form-control" oninput="filtring()" id="wantedLastName" placeholder="Filtr Nazwisk">
                     </div>
                     <div ng-controller="selectCtrl" class="filters">
+                        <a href="#" data-toggle="tooltip" data-placement="top" title="Wybierz funkcje bądź doświadczenie by filtrować według warości" data-placement="top"><span class="glyphicon glyphicon-info-sign"></span></a>
                         <select  ng-model="serviceFunctions" class="form-control"  ng-options="x for x in servicesFunctions" id="servicesFunctionsOptions">
                     </select>
                         <select  ng-model="experiencesOptions" class="form-control"  ng-options="x for x in experiences" id="experiencesOptions">      
