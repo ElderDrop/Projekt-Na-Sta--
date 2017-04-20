@@ -1,12 +1,11 @@
-//1 asc, 2 desc, 0 none
+//Function is sorting by column name
+//typeOfSort for example: id
         function sorting(typeOfSort){
             incrementSort(typeOfSort);
             resetArrows()
             if( typeOfSort == "id" ){
                 if( sort[typeOfSort] == 1 ){
-                     //persons.sort(function( a, b ){return a.id - b.id});
                      sort[typeOfSort] = 0
-                      //$("#idArrow").removeClass("glyphicon-arrow-down").addClass("glyphicon-arrow-up");
                 }
                 if( sort[typeOfSort] == 2 ){
                      persons.sort(function( a, b ){return b.id - a.id});
@@ -92,7 +91,6 @@ function resetSort(){
         sort["serviceFunction"] = 0;
         sort["experience"] = 0;
        $("#idArrow").addClass("glyphicon-arrow-up")
-       // $("#idArrow").removeClass("glyphicon-arrow-down").addClass("glyphicon-arrow-up");
 }
 function resetArrows(){
         $("#firstNameArrow").removeClass("glyphicon-arrow-up").removeClass("glyphicon-arrow-down");

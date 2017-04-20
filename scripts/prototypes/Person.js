@@ -11,7 +11,7 @@ function Person(id,firstName, lastName, dateOfBirth, serviceFunction,experience)
             this.visable[1] = true;
             this.date;
 
-            //konstruktor
+            //gets the right values for days and months and puts it in the date object
                 var day = "";
                 var k = 0;
                 var month = "";
@@ -74,9 +74,9 @@ function Person(id,firstName, lastName, dateOfBirth, serviceFunction,experience)
                 date.setFullYear(Number(year),Number(month)-1,Number(day));
                 date.setHours(Number(hour));
                 date.setMinutes(Number(minute));
-                
                 this.date = date;
-            
+            //METHODS
+            //retun html row
             this.creatRow = function(){
                 var row = document.createElement("tr");
                 row.innerHTML = '<td>'+ this.id +'</td><td>'+ this.firstName +'</td><td>'+ this.lastName +'</td><td>'+ this.dateOfBirth +'</td><td>'+ this.serviceFunction +'</td><td>'+ this.experience +'</td>';

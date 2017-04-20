@@ -6,9 +6,6 @@ function filtring(){
                     dateOne = dateTwo;
                     dateTwo = tmp;
                 }
-                //for( var i = 0; i < data.length; i++ ){
-                    //var parent = data.get(i);
-                    //var person = new Person( Number(parent.children[0].innerText.trim()),parent.children[1].innerText.trim(),parent.children[2].innerText.trim(),parent.children[3].innerText.trim(),parent.children[4].innerText.trim(),parent.children[5].innerText.trim());
                 for(var i = 0; i < persons.length;i++){
                     var person = persons[i];
                     var value = $("#experiencesOptions").val();
@@ -120,17 +117,20 @@ function filtring(){
                     filteredPersons.push( person );
                 }
                 }
-                organiseTable(1);
+                
                 $("#pagetation li").remove();
-                pages = 1;
-                for( var i = 0; i < filteredPersons.length;i++){
-                    if(i%5 == 0){
-                        console.log("pages");
-                        $("#pagetation").append("<li onclick='organiseTable("+ pages +")' value="+ pages +"><a href='#'>"+ pages +"</a></li>");
-                        pages++;
+                if(filteredPersons.length != 0){
+                    pages = 1;
+                    for( var i = 0; i < filteredPersons.length;i++){
+                        if(i%5 == 0){
+                            $("#pagetation").append("<li onclick='organiseTable("+ pages +")' value="+ pages +"><a href='#'>"+ pages +"</a></li>");
+                            pages++;
+                        }
                     }
                 }
-}
+                organiseTable(1);
+    }
+
         $("#experiencesOptions").change(function(){
             filtring();
         });
