@@ -31,20 +31,20 @@
             }
             if( typeOfSort == "lastName" ){
                 if( sort[typeOfSort] == 1 ){
-                    persons.sort( function( a, b ){return a.firstName.localeCompare(b.firstName)});
-                    persons.sort( function( a, b ){return a.lastName.localeCompare(b.lastName)});
+                    persons.sort(function( a, b ){return a.firstName.localeCompare(b.firstName)});
+                    persons.sort(function( a, b ){return a.lastName.localeCompare(b.lastName)});
                 }
                 if( sort[typeOfSort] == 2 ){              
-                    persons.sort( function( a, b ){return b.firstName.localeCompare(a.firstName)});
-                    persons.sort( function( a, b ){return b.lastName.localeCompare(a.lastName)});
+                    persons.sort(function( a, b ){return b.firstName.localeCompare(a.firstName)});
+                    persons.sort(function( a, b ){return b.lastName.localeCompare(a.lastName)});
                 }
             }
             if( typeOfSort == "dateOfBirth" ){
                 if( sort[typeOfSort] == 1 ){
-                    persons.sort( function( a, b ){ return a.date.getTime() - b.date.getTime()});
+                    persons.sort(function( a, b ){ return a.date.getTime() - b.date.getTime()});
                 }
                 if( sort[typeOfSort] == 2 ){
-                    persons.sort( function( a, b ){ return b.date.getTime() - a.date.getTime()});
+                    persons.sort(function( a, b ){ return b.date.getTime() - a.date.getTime()});
                 }
             }
             if( typeOfSort == "serviceFunction" ){
@@ -64,11 +64,10 @@
                 }
             }
             if( sort[typeOfSort] == 0){
+                resetSort();
                 persons.sort(function( a, b ){return a.id - b.id});
             }
-            for(var i = 0; i < persons.length;i++){
-                  idClasses[persons[i].id] = $( "#" + persons[i].id ).attr("class");
-            }
+            
             organiseTable(page);
 
 
@@ -79,4 +78,12 @@ function incrementSort(typeOfSort){
             }else{
                 sort[typeOfSort]++;
             }
+}
+function resetSort(){
+        sort["id"] = 1;
+        sort["firstName"] = 0;
+        sort["lastName"] = 0;
+        sort["dateOfBirth"] = 0;
+        sort["serviceFunction"] = 0;
+        sort["experience"] = 0;
 }

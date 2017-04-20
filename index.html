@@ -14,16 +14,18 @@
 
             <!-- Latest compiled and minified JavaScript -->
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-             <link rel="stylesheet" href="jquery-ui-1.12.1/jquery-ui.min.css">
+            <link rel="stylesheet" href="jquery-ui-1.12.1/jquery-ui.min.css">
             <link rel="stylesheet" href="main.css" /> 
     </head>
     <body ng-app="Service" >
         <header>
-
+            
         </header>
         <main>
-            
-            <table ng-controller = "table" id = "serviceList">
+            <h1>
+                Tabela słuzby
+            </h1>
+            <table id = "serviceList" class="table table-striped">
                 <tr>
                     <th  onclick="sorting('id')" >
                         Id
@@ -44,100 +46,61 @@
                         Doświadczenie
                     </th>
                 </tr>
-                <tr ng-repeat = "x in json " class="data" id="{{x.id}}">
-                    <td>
-                        {{x.id}}
-                    </td>
-                    <td>
-                        {{x.firstName}}
-                    </td>
-                    <td>
-                        {{x.lastName}}
-                    </td>
-                    <td>
-                        {{x.dateOfBirth}}
-                    </td>
-                    <td>
-                        {{x.function}}
-                    </td>
-                    <td>
-                        {{x.experience}}
-                    </td>
-                </tr>
+               
             </table>
-            <div id = "pagetation" class="pagination"> 
+            <div id="pagetation" class="pagination"> 
         </div>
         </main>
         <br />
-        
-        <!--<div id="sort">
-            <button onclick="sorting('id')">Sort Id</button>
-            <button onclick="sorting('firstName')">Sort Imie</button>
-            <button onclick="sorting('lastName')">Sort Nazwisko</button>
-            <button onclick="sorting('dateOfBirth')">Sort data</button>
-            <button onclick="sorting('serviceFunction')">Sort data</button>
-            <button onclick="sorting('experience')">Sort exp</button>
-        </div>-->
-        <br />
-        <input type="text" class="form-control" oninput="filtring()" id="wantedFirstName" placeholder="Filtr Imion">
-        <input type="text" class="form-control" oninput="filtring()" id="wantedLastName" placeholder="Filtr Nazwisk">
-        <div ng-controller="selectCtrl">
-        <select  ng-model="serviceFunctions" class="form-control"  ng-options="x for x in servicesFunctions" id="servicesFunctionsOptions">
-        </select>
-        <select  ng-model="experiencesOptions" class="form-control"  ng-options="x for x in experiences" id="experiencesOptions">      
-        </select>
-        </div>
-        <button onclick="resetDatepickers()" class="btn btn-default">Reset</button>
-        <div id="datepicker"></div>
-        <div id="datepicker2"></div>
+        <section>
+            <h1>
+                Filtry
+            </h1>
+            <div id="namesFilters" class="filters">
+                <input type="text" class="form-control" oninput="filtring()" id="wantedFirstName" placeholder="Filtr Imion">
+                <input type="text" class="form-control" oninput="filtring()" id="wantedLastName" placeholder="Filtr Nazwisk">
+            </div>
+            <div ng-controller="selectCtrl" class="filters">
+                <select  ng-model="serviceFunctions" class="form-control"  ng-options="x for x in servicesFunctions" id="servicesFunctionsOptions">
+            </select>
+                <select  ng-model="experiencesOptions" class="form-control"  ng-options="x for x in experiences" id="experiencesOptions">      
+            </select>
+            </div>
+            
+            <div id="datepicker" class="filters"></div>
+            <div id="datepicker2" class="filters"></div>
+            <button onclick="resetDatepickers()" class="btn btn-default">Reset</button>
+        </section>
         <script src="jquery-ui-1.12.1/jquery-ui.min.js"></script>
         <script src="scripts/prototypes/Person.js"></script>
         <script src="scripts/datepickerScript.js"></script>
         <script src="scripts/sorting.js"></script>
+        <script src="scripts/filtring.js"></script>
+        <script src="scripts/functions.js"></script>
         <script>
             
-        function resetDatepickers(){
-             $( "#datepicker" ).datepicker( "destroy"  );
-             $( "#datepicker" ).datepicker({
-                        minDate: new Date(1970 , 1 - 1, 1),
-                        defaultDate: new Date(1980 , 1 - 1, 1),
-                        changeMonth: true,
-                        changeYear: true,
-                        showButtonPanel: true
-                        });
-             $( "#datepicker2" ).datepicker( "destroy"  );
-             $( "#datepicker2" ).datepicker({
-                        minDate: new Date(1970 , 1 - 1, 1),
-                        defaultDate: new Date(1980 , 1 - 1, 1),
-                        changeMonth: true,
-                        changeYear: true,
-                        showButtonPanel: true
-                        });
-            for(var i = 0;i < persons.length;i++){
-                $( "#" + persons[i].id ).removeClass("fadeByTime");
-            }
-        }
+        
         //variable
-        var appName = "Service";
-        var app = angular.module(appName, []);
+        
         var sort = [];
         var persons = [];
         var tableRows = [];
         var table = [];
-        var idClasses = [];
         var filteredPersons = [];
         var dateOne = null;
         var dateTwo = null;
         var pages = 0;
         var page = 1;
         
-        //iniciation of variables
+        //initialize
         sort["id"] = 0;
         sort["firstName"] = 0;
         sort["lastName"] = 0;
         sort["dateOfBirth"] = 0;
         sort["serviceFunction"] = 0;
         sort["experience"] = 0;
+        
+        //creates table for data form github webpege(wanted file)
         $.getJSON("https://raw.githubusercontent.com/ElderDrop/Projekt-Na-Sta--/master/sluzba.json",function( json ){
             var tmp = 1;
             var k = 5;
@@ -160,64 +123,23 @@
             for( var i = 0; i < table.length;i++ ){
                 $("#serviceList").append(table[i].creatRow());
             }
+            sorting("id");
         });
         
 
 
-        function organiseTable(value){
-            $(".data").remove();
-            page = value;
-            var end = value*5;
-            value = (value-1)*5;
-            if(filteredPersons.length == 0){
-                filteredPersons = persons;
-            }
-            console.log(filteredPersons);
-            if( end > filteredPersons.length ){
-                end = filteredPersons.length;
-            }
-            available = filteredPersons.length;
-            var lastPosition;
-            table = [];
-            for( var i = value ; i < end;i++ ){
-                if( filteredPersons[i].isVisable() ){
-                    table.push(filteredPersons[i]);
-                }else{
-                    end++;
-                    if( end == filteredPersons.length ){
-                        break;
-                    }
-                }
-              
-            }
-            for( var i = 0; i < table.length;i++ ){
-                $("#serviceList").append(table[i].creatRow());
-                $("#" + table[i].id).addClass(idClasses[table.id]);
-            }
-          
-            //filtring();
-        }
         
-        //controllers
-        //This controller creats table
-        app.controller("table",function($scope,$http){
-            //loads json file from github
-           /*$http.get("https://raw.githubusercontent.com/ElderDrop/Projekt-Na-Sta--/master/sluzba.json").then(function(data){
-               var list = [];
-               var begin = 0;
-               var pagination = 12;
-               for(var i = begin; i < pagination;i++){
-                   list.push( data.data[i] );
-               }
-              return $scope.json = list;
-           });    */
-        });
         
-       app.controller("selectCtrl",function($scope,$http){
+        //Angular
+        var appName = "Service";
+        var app = angular.module(appName, []);
+        //puts values in the selects to filtr by function and expiren
+        app.controller("selectCtrl",function($scope,$http){
             $http.get("https://raw.githubusercontent.com/ElderDrop/Projekt-Na-Sta--/master/sluzba.json").then(function(data){
                var servicesFunctions = [];
                var experiences = [];
                var persons = [];
+               //Is inside checks is it uniqe value
                for(var i = 0; i < data.data.length;i++){
                     if(!isInside(data.data[i].experience,experiences)){
                         experiences.push(data.data[i].experience);
@@ -236,154 +158,10 @@
                $scope.experiencesOptions = experiences[0];
             return $scope.servicesFunctions = servicesFunctions;
             });
-        });
-
-        //functions
-        function filtring(){
-                filteredPersons = [];
-                var data = $(".data").clone();
-                if(dateTwo < dateOne){
-                    var tmp = dateOne;
-                    dateOne = dateTwo;
-                    dateTwo = tmp;
-                }
-                //for( var i = 0; i < data.length; i++ ){
-                    //var parent = data.get(i);
-                    //var person = new Person( Number(parent.children[0].innerText.trim()),parent.children[1].innerText.trim(),parent.children[2].innerText.trim(),parent.children[3].innerText.trim(),parent.children[4].innerText.trim(),parent.children[5].innerText.trim());
-                for(var i = 0; i < persons.length;i++){
-                    var person = persons[i];
-                    var value = $("#experiencesOptions").val();
-                    value = value.substring(7,value.length)
-                    if(value == "none"){
-                        if(!$( "#" + person.id ).hasClass(/fadeBy/)){
-                            if( $( "#" + person.id ).hasClass("fadeByExp") ){
-                                $( "#" + person.id ).fadeIn();
-                            }
-                            $( "#" + person.id ).removeClass("fadeByExp");
-                             person.visable[0] = true;
-                         }
-                    }else{
-                        if( person.experience != value ){
-                            $( "#" + person.id ).fadeOut().addClass("fadeByExp");
-                            person.visable[0] = false;
-                        }else{
-                            if(!$( "#" + person.id ).hasClass(/fadeBy/)){
-                                $( "#" + person.id ).fadeIn();
-                                $( "#" + person.id ).removeClass("fadeByExp");
-                                person.visable[0]= true;
-                            }
-                        }
-                    
-                    }
-
-                    value = $( "#servicesFunctionsOptions" ).val();
-                    value = value.substring(7,value.length);
-                    
-                    if( value == "none" ){
-                      if(!$( "#" + person.id ).hasClass(/fadeBy/)){
-                            if( $( "#" + person.id ).hasClass("fadeByServ") ){
-                                $( "#" + person.id ).fadeIn();
-                            }
-                            $( "#" + person.id ).removeClass("fadeByServ");
-                            person.visable[1] = true;
-                         }
-                    }else{
-                        if( person.serviceFunction != value ){
-                            $( "#" + person.id ).fadeOut().addClass("fadeByServ");
-                            person.visable[1]  = false;
-                        }else{
-                            if(!$( "#" + person.id ).hasClass(/fadeBy/)){
-                                $( "#" + person.id ).fadeIn();
-                                $( "#" + person.id ).removeClass("fadeByServ");
-                                person.visable[1] = true;
-                            }
-                        }
-                    
-                    }
-
-                    value = $("#wantedFirstName").val().trim().toLowerCase();
-                    if( value.length == 0 ){
-                        $( "#" + person.id ).removeClass("fadeByFirstName");
-                        if(!$( "#" + person.id ).hasClass(/fadeBy/)){
-                                $( "#" + person.id ).fadeIn();
-                            }
-                            person.visable[2] = true;
-                    }
-                    if( value.length > 0 ){
-                        if( person.firstName.toLowerCase().includes(value) ){
-                            if( !$( "#" + person.id ).hasClass(/fadeBy/) ){
-                                $( "#" + person.id ).fadeIn();
-                            }
-                            $( "#" + person.id ).removeClass("fadeByFirstName");
-                            person.visable[2]  = true;
-                        }else{
-                            $( "#" + person.id ).fadeOut().addClass("fadeByFirstName");
-                            person.visable[2]  = false;
-                        }
-                    }
-
-                    value = $("#wantedLastName").val().trim().toLowerCase();
-                    if( value.length == 0 ){
-                        $( "#" + person.id ).removeClass("fadeByLastName");
-                        if(!$( "#" + person.id ).hasClass(/fadeBy/)){
-                                $( "#" + person.id ).fadeIn();
-                            }
-                        person.visable[3]  = true;
-                    }
-                    if( value.length > 0 ){
-                        if( person.lastName.toLowerCase().includes(value) ){
-                            if(!$( "#" + person.id ).hasClass(/fadeBy/)){
-                                $( "#" + person.id ).fadeIn();
-                            }
-                            $( "#" + person.id ).removeClass("fadeByLastName");
-                            person.visable[3]  = true;
-                        }else{
-                            $( "#" + person.id ).fadeOut().addClass("fadeByLastName");
-                            person.visable[3]  = false;
-                        }
-                    }
-                    var tmpDate = new Date(person.date.getFullYear(),person.date.getMonth(),person.date.getDay(),0,0,0,0);
-                    if(dateOne != null && dateTwo != null){
-                        if(dateOne.getTime() <= tmpDate.getTime() && dateTwo.getTime() >= tmpDate.getTime()){
-                                if(!$( "#" + person.id ).hasClass(/fadeBy/)){
-                                    $( "#" + person.id ).fadeIn();
-                                }
-                                $( "#" + person.id ).removeClass("fadeByTime");
-                                person.visable[4]  = true;
-                            }else{
-                                $( "#" + person.id ).fadeOut().addClass("fadeByTime");
-                                person.visable[4]  = false;
-                            }
-                    }
-                    
-                    
-                if( person.isVisable() ){
-                    filteredPersons.push( person );
-                }
-                }
-                organiseTable(1);
-                
-        }
-        
-        function isInside(str, tab){
-            for( var i = 0; i < tab.length;i++ ){
-                if( tab[i] == str ){
-                    return true;
-                }
-            }
-            return false;
-        }
-        $("#experiencesOptions").change(function(){
-            filtring();
-        });
-        $("#servicesFunctionsOptions").change(function(){
-            filtring();
-        });
+        });  
 
         
-        
-        
-        
+      
         </script>
     </body>
 </html>

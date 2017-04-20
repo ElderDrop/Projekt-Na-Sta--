@@ -1,37 +1,32 @@
-table, th , td {
-  border: 1px solid grey;
-  border-collapse: collapse;
-  padding: 5px;
-}
-table tr:nth-child(odd) {
-  background-color: #f1f1f1;
-}
-table tr:nth-child(even) {
-  background-color: #ffffff;
-}
-.fadeByExp{
-  display: none !important;
-}
-.fadeByServ{
-  display: none !important;
-}
-.fadeByFirstName{
-  display: none !important;
-}
-.fadeByLastName{
-  display: none !important;
-}
-.fadeByTime{
-   display: none !important;
+header{
+    background-image: url("BeautyBanner.png");
+    background-repeat: no-repeat;
+    background-position: top;
+    background-size: cover;
+    height: 200px;
+    width: 100%;
 }
 main{
-  width: 503px;
-  margin: auto;
+  width: 547px;
+  float: left;
+  margin-bottom: 150px; 
+  margin-top: 20px;
 }
 #pagetation{
   float: right;
 }
+section{
+  float: right;
+}
+h1{
+  text-align: center;
+}
 .form-control{
   width: 200px;
   margin-bottom: 10px;
+}
+.filters{
+  width: 250px;
+  margin: auto;
+  float: left;
 }
