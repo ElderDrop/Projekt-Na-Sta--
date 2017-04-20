@@ -20,7 +20,7 @@
         <div class="container-fluid" class="row">
             <main class="col-sm-5">
                 <h1>
-                    Tabela słuzby
+                    Tabela służby
                 </h1>
                 <a href="#" class="floatRight" data-toggle="tooltip" data-placement="top" title="Kliknij w tytuł kolumny np: Imie by posortować" data-placement="top"><span class="glyphicon glyphicon-info-sign"></span></a>
                 <table id = "serviceList" class="table table-striped">
@@ -59,19 +59,26 @@
                     
                     <div id="namesFilters" class="filters">
                         <a href="#" data-toggle="tooltip" data-placement="top" title="Wpisz część lub całość imienia bądż nazwiska by filtrować" data-placement="top"><span class="glyphicon glyphicon-info-sign"></span></a>
+                        <br />
+                        Filtr poprzez imie:<br />
                         <input type="text" class="form-control" oninput="filtring()" id="wantedFirstName" placeholder="Filtr Imion">
+                        Filtr poprzez nazwisko:<br />
                         <input type="text" class="form-control" oninput="filtring()" id="wantedLastName" placeholder="Filtr Nazwisk">
                     </div>
                     <div ng-controller="selectCtrl" class="filters">
                         <a href="#" data-toggle="tooltip" data-placement="top" title="Wybierz funkcje bądź doświadczenie by filtrować według warości" data-placement="top"><span class="glyphicon glyphicon-info-sign"></span></a>
+                        <br />
+                        Filtr poprzez pełnioną funkcje:<br />
                         <select  ng-model="serviceFunctions" class="form-control"  ng-options="x for x in servicesFunctions" id="servicesFunctionsOptions">
                     </select>
+                        Filtr poprzez ilość doświadczenia:<br />
                         <select  ng-model="experiencesOptions" class="form-control"  ng-options="x for x in experiences" id="experiencesOptions">      
                     </select>
                     </div>
                 </div>
                     <div class="col-sm-6">
-                        <a href="#" data-toggle="tooltip" data-placement="top" title="Po wybraniu dwóch dat,zadziała filtr i wybierze rekordy mieszczące się w zakresie" data-placement="top"><span class="glyphicon glyphicon-info-sign"></span></a><br />
+                        <a href="#" data-toggle="tooltip" data-placement="top" title="Po wybraniu dwóch dat,zadziała filtr i wybierze rekordy mieszczące się w zakresie. By wyłączyć filtr należy kliknąć w przycisk resetuj kalenarz" data-placement="top"><span class="glyphicon glyphicon-info-sign"></span></a><br />
+                        Filtr poprzez daty(działa po wybraniu dwóch dat):<br />
                         <div id="datepicker" class="filters"></div>
                         <div id="datepicker2" class="filters"></div><br />
                         <button id="dateReset" onclick="resetDatepickers()" class="btn btn-default">Zresetuj kalendarze</button>
@@ -85,7 +92,7 @@
                 Jan Olszański 2017
             </h3>
         </footer>
-        
+
         <script src="jquery-ui-1.12.1/jquery-ui.min.js"></script>
         <script src="scripts/prototypes/Person.js"></script>
         <script src="scripts/datepickerScript.js"></script>

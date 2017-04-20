@@ -41,15 +41,7 @@ h1{
   margin: auto;
   display: inline-block;
 }
-#wantedFirstName{
-  margin-top: 10px;
-}
-#servicesFunctionsOptions{
-  margin-top: 10px;
-}
-#datepicker{
-  margin-top: 10px; 
-}
+
 /*FOOTER*/
 footer{
   margin-top: 50px; 
