@@ -1,66 +1,71 @@
 //1 asc, 2 desc, 0 none
         function sorting(typeOfSort){
-            incrementSort(typeOfSort)
+            incrementSort(typeOfSort);
+            resetArrows()
             if( typeOfSort == "id" ){
                 if( sort[typeOfSort] == 1 ){
-                     persons.sort(function( a, b ){return a.id - b.id});
+                     //persons.sort(function( a, b ){return a.id - b.id});
+                     sort[typeOfSort] = 0
+                      //$("#idArrow").removeClass("glyphicon-arrow-down").addClass("glyphicon-arrow-up");
                 }
                 if( sort[typeOfSort] == 2 ){
                      persons.sort(function( a, b ){return b.id - a.id});
+                     $("#idArrow").removeClass("glyphicon-arrow-up").addClass("glyphicon-arrow-down");
                 }
             }        
             if( typeOfSort == "firstName" ){
                 if( sort[typeOfSort] == 1 ){
                     persons.sort(function( a, b ){return a.lastName.localeCompare(b.lastName)});
                     persons.sort(function( a, b ){return a.firstName.localeCompare(b.firstName)});
+                    $("#firstNameArrow").addClass("glyphicon-arrow-up").removeClass("glyphicon-arrow-down");
                 }
                 if( sort[typeOfSort] == 2 ){
                     persons.sort(function( a, b ){return b.lastName.localeCompare(a.lastName)});
                     persons.sort(function( a, b ){return b.firstName.localeCompare(a.firstName)});
+                    $("#firstNameArrow").removeClass("glyphicon-arrow-up").addClass("glyphicon-arrow-down");
                 }
             }
-            if( typeOfSort == "firstName" ){
-                if( sort[typeOfSort] == 1 ){
-                    persons.sort(function( a, b ){return a.lastName.localeCompare(b.lastName)});
-                    persons.sort(function( a, b ){return a.firstName.localeCompare(b.firstName)});
-                }
-                if( sort[typeOfSort] == 2 ){
-                    persons.sort(function( a, b ){return b.lastName.localeCompare( a.lastName )});
-                    persons.sort(function( a, b ){return b.firstName.localeCompare( a.firstName )});
-                }
-            }
+        
             if( typeOfSort == "lastName" ){
                 if( sort[typeOfSort] == 1 ){
                     persons.sort(function( a, b ){return a.firstName.localeCompare(b.firstName)});
                     persons.sort(function( a, b ){return a.lastName.localeCompare(b.lastName)});
+                    $("#lastNameArrow").addClass("glyphicon-arrow-up").removeClass("glyphicon-arrow-down");
                 }
                 if( sort[typeOfSort] == 2 ){              
                     persons.sort(function( a, b ){return b.firstName.localeCompare(a.firstName)});
                     persons.sort(function( a, b ){return b.lastName.localeCompare(a.lastName)});
+                     $("#lastNameArrow").removeClass("glyphicon-arrow-up").addClass("glyphicon-arrow-down");
                 }
             }
             if( typeOfSort == "dateOfBirth" ){
                 if( sort[typeOfSort] == 1 ){
                     persons.sort(function( a, b ){ return a.date.getTime() - b.date.getTime()});
+                    $("#dateArrow").addClass("glyphicon-arrow-up").removeClass("glyphicon-arrow-down");
                 }
                 if( sort[typeOfSort] == 2 ){
                     persons.sort(function( a, b ){ return b.date.getTime() - a.date.getTime()});
+                    $("#dateArrow").removeClass("glyphicon-arrow-up").addClass("glyphicon-arrow-down");
                 }
             }
             if( typeOfSort == "serviceFunction" ){
                 if( sort[typeOfSort] == 1 ){
                     persons.sort(function( a, b ){return a.serviceFunction.localeCompare(b.serviceFunction)});
+                    $("#functionArrow").addClass("glyphicon-arrow-up").removeClass("glyphicon-arrow-down");
                 }
                 if( sort[typeOfSort] == 2 ){
                     persons.sort(function( a, b ){return b.serviceFunction.localeCompare(a.serviceFunction)});
+                    $("#functionArrow").removeClass("glyphicon-arrow-up").addClass("glyphicon-arrow-down");
                 }
             }
             if( typeOfSort == "experience" ){
                 if( sort[typeOfSort] == 1 ){
                     persons.sort(function( a, b ){return a.experience-b.experience});
+                    $("#expirienceArrow").addClass("glyphicon-arrow-up").removeClass("glyphicon-arrow-down");
                 }
                 if( sort[typeOfSort] == 2 ){
                     persons.sort(function( a, b ){return b.experience-a.experience});
+                    $("#expirienceArrow").removeClass("glyphicon-arrow-up").addClass("glyphicon-arrow-down");
                 }
             }
             if( sort[typeOfSort] == 0){
@@ -86,4 +91,14 @@ function resetSort(){
         sort["dateOfBirth"] = 0;
         sort["serviceFunction"] = 0;
         sort["experience"] = 0;
+       $("#idArrow").addClass("glyphicon-arrow-up")
+       // $("#idArrow").removeClass("glyphicon-arrow-down").addClass("glyphicon-arrow-up");
+}
+function resetArrows(){
+        $("#firstNameArrow").removeClass("glyphicon-arrow-up").removeClass("glyphicon-arrow-down");
+        $("#idArrow").removeClass("glyphicon-arrow-up").removeClass("glyphicon-arrow-down");
+        $("#lastNameArrow").removeClass("glyphicon-arrow-up").removeClass("glyphicon-arrow-down");
+        $("#dateArrow").removeClass("glyphicon-arrow-up").removeClass("glyphicon-arrow-down");
+        $("#functionArrow").removeClass("glyphicon-arrow-up").removeClass("glyphicon-arrow-down");
+        $("#expirienceArrow").removeClass("glyphicon-arrow-up").removeClass("glyphicon-arrow-down");
 }

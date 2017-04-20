@@ -21,56 +21,69 @@
         <header>
             
         </header>
-        <main>
-            <h1>
-                Tabela słuzby
-            </h1>
-            <table id = "serviceList" class="table table-striped">
-                <tr>
-                    <th  onclick="sorting('id')" >
-                        Id
-                    </th>
-                    <th  onclick="sorting('firstName')">
-                        Imie
-                    </th>
-                    <th onclick="sorting('lastName')">
-                        Nazwisko
-                    </th>
-                    <th onclick="sorting('dateOfBirth')">
-                        Data Urodzenia
-                    </th>
-                    <th onclick="sorting('serviceFunction')">
-                        Funkcja
-                    </th>
-                    <th onclick="sorting('experience')">
-                        Doświadczenie
-                    </th>
-                </tr>
-               
-            </table>
-            <div id="pagetation" class="pagination"> 
+        <div class="container-fluid" class="row">
+            <main class="col-sm-5">
+                <h1>
+                    Tabela słuzby
+                </h1>
+                <table id = "serviceList" class="table table-striped">
+                    <tr>
+                        <th  onclick="sorting('id')" >
+                            Id <span id="idArrow" class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                        </th>
+                        <th  onclick="sorting('firstName')">
+                            Imie <span id="firstNameArrow" class="glyphicon " aria-hidden="true"></span>
+                        </th>
+                        <th onclick="sorting('lastName')">
+                            Nazwisko <span id="lastNameArrow" class="glyphicon " aria-hidden="true"></span>
+                        </th>
+                        <th onclick="sorting('dateOfBirth')">
+                            Data Urodzenia <span id="dateArrow" class="glyphicon" aria-hidden="true"></span>
+                        </th>
+                        <th onclick="sorting('serviceFunction')">
+                            Funkcja <span id="functionArrow" class="glyphicon" aria-hidden="true"></span>
+                        </th>
+                        <th onclick="sorting('experience')">
+                            Doświadczenie <span id="expirienceArrow" class="glyphicon " aria-hidden="true"></span>
+                        </th>
+                    </tr>
+                
+                </table>
+                <div id="pagetation" class="pagination"> 
+            </div>
+            </main>
+            <br />
+            <section class="col-sm-5">
+                <h1>
+                    Filtry
+                </h1>
+                <div class="row ">
+                <div class="col-sm-6">
+                    <div id="namesFilters" class="filters">
+                        <input type="text" class="form-control" oninput="filtring()" id="wantedFirstName" placeholder="Filtr Imion">
+                        <input type="text" class="form-control" oninput="filtring()" id="wantedLastName" placeholder="Filtr Nazwisk">
+                    </div>
+                    <div ng-controller="selectCtrl" class="filters">
+                        <select  ng-model="serviceFunctions" class="form-control"  ng-options="x for x in servicesFunctions" id="servicesFunctionsOptions">
+                    </select>
+                        <select  ng-model="experiencesOptions" class="form-control"  ng-options="x for x in experiences" id="experiencesOptions">      
+                    </select>
+                    </div>
+                </div>
+                    <div class="col-sm-6">
+                        <div id="datepicker" class="filters"></div>
+                        <div id="datepicker2" class="filters"></div><br />
+                        <button id="dateReset" onclick="resetDatepickers()" class="btn btn-default">Reset</button>
+                    </div>
+                </div>
+                </div>
+            </section>
         </div>
-        </main>
-        <br />
-        <section>
-            <h1>
-                Filtry
-            </h1>
-            <div id="namesFilters" class="filters">
-                <input type="text" class="form-control" oninput="filtring()" id="wantedFirstName" placeholder="Filtr Imion">
-                <input type="text" class="form-control" oninput="filtring()" id="wantedLastName" placeholder="Filtr Nazwisk">
-            </div>
-            <div ng-controller="selectCtrl" class="filters">
-                <select  ng-model="serviceFunctions" class="form-control"  ng-options="x for x in servicesFunctions" id="servicesFunctionsOptions">
-            </select>
-                <select  ng-model="experiencesOptions" class="form-control"  ng-options="x for x in experiences" id="experiencesOptions">      
-            </select>
-            </div>
-            
-            <div id="datepicker" class="filters"></div>
-            <div id="datepicker2" class="filters"></div>
-            <button onclick="resetDatepickers()" class="btn btn-default">Reset</button>
-        </section>
+        <footer>
+            <h3>
+                Jan Olszański 2017
+            </h3>
+        </footer>
         <script src="jquery-ui-1.12.1/jquery-ui.min.js"></script>
         <script src="scripts/prototypes/Person.js"></script>
         <script src="scripts/datepickerScript.js"></script>
@@ -152,8 +165,8 @@
                experiences.sort(function( a, b ){return Number(a) - Number(b)});
                $scope.experiences = experiences;
                servicesFunctions.sort((function( a, b ){return a.localeCompare(b)}));
-               servicesFunctions.unshift("none");
-               experiences.unshift("none");
+               servicesFunctions.unshift("Brak filtru");
+               experiences.unshift("Brak filtru");
                $scope.serviceFunctions = servicesFunctions[0];
                $scope.experiencesOptions = experiences[0];
             return $scope.servicesFunctions = servicesFunctions;

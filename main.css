@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Lato');
+/*HEAD*/
 header{
     background-image: url("BeautyBanner.png");
     background-repeat: no-repeat;
@@ -6,8 +8,12 @@ header{
     height: 200px;
     width: 100%;
 }
+.container-fluid{
+  margin: auto;
+}
+/*TABLE*/
 main{
-  width: 547px;
+  width: 700px;
   float: left;
   margin-bottom: 150px; 
   margin-top: 20px;
@@ -15,8 +21,11 @@ main{
 #pagetation{
   float: right;
 }
+/*FILTRS*/
 section{
-  float: right;
+  float: left;
+  margin-left: 50px;
+  margin-right: 50px;
 }
 h1{
   text-align: center;
@@ -28,5 +37,17 @@ h1{
 .filters{
   width: 250px;
   margin: auto;
-  float: left;
+  display: inline-block;
+}
+
+footer{
+  margin-top: 50px; 
+  color: white;
+  background-color:  #252122;
+  
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 1rem;
+  text-align: center;
 }

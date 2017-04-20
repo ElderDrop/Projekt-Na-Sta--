@@ -13,7 +13,7 @@ function filtring(){
                     var person = persons[i];
                     var value = $("#experiencesOptions").val();
                     value = value.substring(7,value.length)
-                    if(value == "none"){
+                    if(value == "brak filtru"){
                         if(!$( "#" + person.id ).hasClass(/fadeBy/)){
                             if( $( "#" + person.id ).hasClass("fadeByExp") ){
                                 $( "#" + person.id ).fadeIn();
@@ -38,7 +38,7 @@ function filtring(){
                     value = $( "#servicesFunctionsOptions" ).val();
                     value = value.substring(7,value.length);
                     
-                    if( value == "none" ){
+                    if( value == "brak filtru" ){
                       if(!$( "#" + person.id ).hasClass(/fadeBy/)){
                             if( $( "#" + person.id ).hasClass("fadeByServ") ){
                                 $( "#" + person.id ).fadeIn();
@@ -121,7 +121,15 @@ function filtring(){
                 }
                 }
                 organiseTable(1);
-                
+                $("#pagetation li").remove();
+                pages = 1;
+                for( var i = 0; i < filteredPersons.length;i++){
+                    if(i%5 == 0){
+                        console.log("pages");
+                        $("#pagetation").append("<li onclick='organiseTable("+ pages +")' value="+ pages +"><a href='#'>"+ pages +"</a></li>");
+                        pages++;
+                    }
+                }
 }
         $("#experiencesOptions").change(function(){
             filtring();
