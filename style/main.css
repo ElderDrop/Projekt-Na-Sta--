@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css?family=Lato');
 /*HEAD BeautyBanner*/
 header{
-  background: url("BeautyBanner.png") left center;
+  background: url("../img/BeautyBanner.png") left center;
   background-color: #252122;
   background-size: contain;
   background-repeat: no-repeat;
