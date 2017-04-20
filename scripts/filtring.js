@@ -13,7 +13,7 @@ function filtring(){
                     var person = persons[i];
                     var value = $("#experiencesOptions").val();
                     value = value.substring(7,value.length)
-                    if(value == "brak filtru"){
+                    if(value == "Brak filtru"){
                         if(!$( "#" + person.id ).hasClass(/fadeBy/)){
                             if( $( "#" + person.id ).hasClass("fadeByExp") ){
                                 $( "#" + person.id ).fadeIn();
@@ -38,7 +38,7 @@ function filtring(){
                     value = $( "#servicesFunctionsOptions" ).val();
                     value = value.substring(7,value.length);
                     
-                    if( value == "brak filtru" ){
+                    if( value == "Brak filtru" ){
                       if(!$( "#" + person.id ).hasClass(/fadeBy/)){
                             if( $( "#" + person.id ).hasClass("fadeByServ") ){
                                 $( "#" + person.id ).fadeIn();
