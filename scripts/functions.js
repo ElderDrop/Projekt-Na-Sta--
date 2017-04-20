@@ -1,25 +1,3 @@
-//redo the date picker by destroing datepickers
-function resetDatepickers(){
-             $( "#datepicker" ).datepicker( "destroy"  );
-             $( "#datepicker" ).datepicker({
-                        minDate: new Date(1970 , 1 - 1, 1),
-                        defaultDate: new Date(1980 , 1 - 1, 1),
-                        changeMonth: true,
-                        changeYear: true,
-                        showButtonPanel: true
-                        });
-             $( "#datepicker2" ).datepicker( "destroy"  );
-             $( "#datepicker2" ).datepicker({
-                        minDate: new Date(1970 , 1 - 1, 1),
-                        defaultDate: new Date(1980 , 1 - 1, 1),
-                        changeMonth: true,
-                        changeYear: true,
-                        showButtonPanel: true
-                        });
-            for(var i = 0;i < persons.length;i++){
-                $( "#" + persons[i].id ).removeClass("fadeByTime");
-            }
-}
 //pagination by organisation of table
 function organiseTable(value){
             //removes old data
@@ -33,7 +11,7 @@ function organiseTable(value){
             if( end > filteredPersons.length ){
                 end = filteredPersons.length;
             }
-            available = filteredPersons.length;
+            //puts into table only visable elements
             table = [];
             for( var i = value ; i < end;i++ ){
                 if( filteredPersons[i].isVisable() ){
@@ -46,15 +24,14 @@ function organiseTable(value){
                 }
               
             }
-            
+            //fil table with right rows
             for( var i = 0; i < table.length;i++ ){
-                $("#serviceList").append(table[i].creatRow());
-                
-                
+                $("#serviceList").append(table[i].creatRow());           
             }
             
 }
-        function isInside(str, tab){
+//return true if element is inside the table
+    function isInside(str, tab){
             for( var i = 0; i < tab.length;i++ ){
                 if( tab[i] == str ){
                     return true;

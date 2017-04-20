@@ -67,15 +67,15 @@
                     $("#expirienceArrow").removeClass("glyphicon-arrow-up").addClass("glyphicon-arrow-down");
                 }
             }
+            //if third click resets sorting
             if( sort[typeOfSort] == 0){
                 resetSort();
                 persons.sort(function( a, b ){return a.id - b.id});
             }
-            
+
             organiseTable(page);
-
-
 }
+//increments value in hash table
 function incrementSort(typeOfSort){
              if( sort[typeOfSort] == 2 ){
                 sort[typeOfSort] = 0;
@@ -83,6 +83,7 @@ function incrementSort(typeOfSort){
                 sort[typeOfSort]++;
             }
 }
+//resets all values of sort to 0 and puts up arrow to id column name
 function resetSort(){
         sort["id"] = 1;
         sort["firstName"] = 0;
@@ -92,6 +93,7 @@ function resetSort(){
         sort["experience"] = 0;
        $("#idArrow").addClass("glyphicon-arrow-up")
 }
+//deletes all the arrows in columns names
 function resetArrows(){
         $("#firstNameArrow").removeClass("glyphicon-arrow-up").removeClass("glyphicon-arrow-down");
         $("#idArrow").removeClass("glyphicon-arrow-up").removeClass("glyphicon-arrow-down");

@@ -3,19 +3,15 @@
             <meta charset="utf-8" />
             <title>Służba</title>
             
-            <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
-            
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-            <!-- Latest compiled and minified CSS -->
-            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous" />
+            <link rel="stylesheet" href="jquery-ui-1.12.1/jquery-ui.min.css" />
+            <link rel="stylesheet" href="main.css" />
 
-            <!-- Optional theme -->
-            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-
-            <!-- Latest compiled and minified JavaScript -->
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-            <link rel="stylesheet" href="jquery-ui-1.12.1/jquery-ui.min.css">
-            <link rel="stylesheet" href="main.css" /> 
+            <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>      
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+             
     </head>
     <body ng-app="Service" >
         <header>
@@ -89,6 +85,7 @@
                 Jan Olszański 2017
             </h3>
         </footer>
+        
         <script src="jquery-ui-1.12.1/jquery-ui.min.js"></script>
         <script src="scripts/prototypes/Person.js"></script>
         <script src="scripts/datepickerScript.js"></script>
@@ -166,14 +163,15 @@
                         servicesFunctions.push(data.data[i].function.trim());
                     }; 
                
-               
+            //sorts data and puts it into right scope variables
                experiences.sort(function( a, b ){return Number(a) - Number(b)});
                $scope.experiences = experiences;
+               experiences.unshift("Brak filtru");
+               $scope.experiencesOptions = experiences[0];
+
                servicesFunctions.sort((function( a, b ){return a.localeCompare(b)}));
                servicesFunctions.unshift("Brak filtru");
-               experiences.unshift("Brak filtru");
-               $scope.serviceFunctions = servicesFunctions[0];
-               $scope.experiencesOptions = experiences[0];
+               $scope.serviceFunctions = servicesFunctions[0]; 
             return $scope.servicesFunctions = servicesFunctions;
             });
         });  

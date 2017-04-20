@@ -1,4 +1,6 @@
+//filtr function
 function filtring(){
+                //clears table of element which one will be shown
                 filteredPersons = []
                 var data = $(".data").clone();
                 if(dateTwo < dateOne){
@@ -6,28 +8,18 @@ function filtring(){
                     dateOne = dateTwo;
                     dateTwo = tmp;
                 }
+                //filtrs element fullfill requirements stays viable by puting element into table
                 for(var i = 0; i < persons.length;i++){
                     var person = persons[i];
                     var value = $("#experiencesOptions").val();
                     value = value.substring(7,value.length)
                     if(value == "Brak filtru"){
-                        if(!$( "#" + person.id ).hasClass(/fadeBy/)){
-                            if( $( "#" + person.id ).hasClass("fadeByExp") ){
-                                $( "#" + person.id ).fadeIn();
-                            }
-                            $( "#" + person.id ).removeClass("fadeByExp");
                              person.visable[0] = true;
-                         }
                     }else{
                         if( person.experience != value ){
-                            $( "#" + person.id ).fadeOut().addClass("fadeByExp");
                             person.visable[0] = false;
                         }else{
-                            if(!$( "#" + person.id ).hasClass(/fadeBy/)){
-                                $( "#" + person.id ).fadeIn();
-                                $( "#" + person.id ).removeClass("fadeByExp");
-                                person.visable[0]= true;
-                            }
+                            person.visable[0]= true;
                         }
                     
                     }
@@ -36,88 +28,54 @@ function filtring(){
                     value = value.substring(7,value.length);
                     
                     if( value == "Brak filtru" ){
-                      if(!$( "#" + person.id ).hasClass(/fadeBy/)){
-                            if( $( "#" + person.id ).hasClass("fadeByServ") ){
-                                $( "#" + person.id ).fadeIn();
-                            }
-                            $( "#" + person.id ).removeClass("fadeByServ");
                             person.visable[1] = true;
-                         }
+
                     }else{
                         if( person.serviceFunction != value ){
-                            $( "#" + person.id ).fadeOut().addClass("fadeByServ");
                             person.visable[1]  = false;
                         }else{
-                            if(!$( "#" + person.id ).hasClass(/fadeBy/)){
-                                $( "#" + person.id ).fadeIn();
-                                $( "#" + person.id ).removeClass("fadeByServ");
                                 person.visable[1] = true;
-                            }
                         }
-                    
                     }
 
                     value = $("#wantedFirstName").val().trim().toLowerCase();
                     if( value.length == 0 ){
-                        $( "#" + person.id ).removeClass("fadeByFirstName");
-                        if(!$( "#" + person.id ).hasClass(/fadeBy/)){
-                                $( "#" + person.id ).fadeIn();
-                            }
                             person.visable[2] = true;
                     }
                     if( value.length > 0 ){
                         if( person.firstName.toLowerCase().includes(value) ){
-                            if( !$( "#" + person.id ).hasClass(/fadeBy/) ){
-                                $( "#" + person.id ).fadeIn();
-                            }
-                            $( "#" + person.id ).removeClass("fadeByFirstName");
                             person.visable[2]  = true;
                         }else{
-                            $( "#" + person.id ).fadeOut().addClass("fadeByFirstName");
                             person.visable[2]  = false;
                         }
                     }
 
                     value = $("#wantedLastName").val().trim().toLowerCase();
                     if( value.length == 0 ){
-                        $( "#" + person.id ).removeClass("fadeByLastName");
-                        if(!$( "#" + person.id ).hasClass(/fadeBy/)){
-                                $( "#" + person.id ).fadeIn();
-                            }
                         person.visable[3]  = true;
                     }
                     if( value.length > 0 ){
                         if( person.lastName.toLowerCase().includes(value) ){
-                            if(!$( "#" + person.id ).hasClass(/fadeBy/)){
-                                $( "#" + person.id ).fadeIn();
-                            }
-                            $( "#" + person.id ).removeClass("fadeByLastName");
                             person.visable[3]  = true;
                         }else{
-                            $( "#" + person.id ).fadeOut().addClass("fadeByLastName");
                             person.visable[3]  = false;
                         }
                     }
                     var tmpDate = new Date(person.date.getFullYear(),person.date.getMonth(),person.date.getDay(),0,0,0,0);
                     if(dateOne != null && dateTwo != null){
                         if(dateOne.getTime() <= tmpDate.getTime() && dateTwo.getTime() >= tmpDate.getTime()){
-                                if(!$( "#" + person.id ).hasClass(/fadeBy/)){
-                                    $( "#" + person.id ).fadeIn();
-                                }
-                                $( "#" + person.id ).removeClass("fadeByTime");
                                 person.visable[4]  = true;
                             }else{
-                                $( "#" + person.id ).fadeOut().addClass("fadeByTime");
                                 person.visable[4]  = false;
                             }
                     }
                     
-                    
+                //if after all filtrs object is viasble put it into table to show
                 if( person.isVisable() ){
                     filteredPersons.push( person );
                 }
-                }
-                
+            }
+                //creats proper amount of page buttons
                 $("#pagetation li").remove();
                 if(filteredPersons.length != 0){
                     pages = 1;
@@ -130,7 +88,7 @@ function filtring(){
                 }
                 organiseTable(1);
     }
-
+        //both functions use only filtring function
         $("#experiencesOptions").change(function(){
             filtring();
         });
