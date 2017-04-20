@@ -65,7 +65,7 @@
                     </td>
                 </tr>
             </table>
-            <div id = "pagetation">
+            <div id = "pagetation" class="pagination"> 
         </div>
         </main>
         <br />
@@ -79,15 +79,15 @@
             <button onclick="sorting('experience')">Sort exp</button>
         </div>-->
         <br />
-        <input type="text" oninput="filtring()" id="wantedFirstName" placeholder="Filtr Imion">
-        <input type="text" oninput="filtring()" id="wantedLastName" placeholder="Filtr Nazwisk">
+        <input type="text" class="form-control" oninput="filtring()" id="wantedFirstName" placeholder="Filtr Imion">
+        <input type="text" class="form-control" oninput="filtring()" id="wantedLastName" placeholder="Filtr Nazwisk">
         <div ng-controller="selectCtrl">
-        <select  ng-model="serviceFunctions"  ng-options="x for x in servicesFunctions" id="servicesFunctionsOptions">
+        <select  ng-model="serviceFunctions" class="form-control"  ng-options="x for x in servicesFunctions" id="servicesFunctionsOptions">
         </select>
-        <select  ng-model="experiencesOptions"  ng-options="x for x in experiences" id="experiencesOptions">      
+        <select  ng-model="experiencesOptions" class="form-control"  ng-options="x for x in experiences" id="experiencesOptions">      
         </select>
         </div>
-        <button onclick="resetDatepickers()">Reset</button>
+        <button onclick="resetDatepickers()" class="btn btn-default">Reset</button>
         <div id="datepicker"></div>
         <div id="datepicker2"></div>
         <script src="jquery-ui-1.12.1/jquery-ui.min.js"></script>
@@ -125,12 +125,12 @@
         var tableRows = [];
         var table = [];
         var idClasses = [];
+        var filteredPersons = [];
         var dateOne = null;
         var dateTwo = null;
         var pages = 0;
         var page = 1;
-        var available;
-        var last;
+        
         //iniciation of variables
         sort["id"] = 0;
         sort["firstName"] = 0;
@@ -142,7 +142,7 @@
             var tmp = 1;
             var k = 5;
             pages++;
-            $("#pagetation").append("<button class='pagnation' onclick='organiseTable("+ pages +")' value='"+ pages + "'>1</button>");
+            $("#pagetation").append("<li  onclick='organiseTable("+ pages +")' value='"+ pages + "'><a href='#'>1</a></li>");
             for( var i = 0; i < json.length;i++ ){
                 var x = json[i];
                 persons.push( new Person(x.id,x.firstName,x.lastName,x.dateOfBirth,x.function,x.experience) );
@@ -153,7 +153,7 @@
                 if(tmp == k ){
                     pages++;
                     k += k;
-                    $("#pagetation").append("<button class='pagnation' onclick='organiseTable("+ pages +")' value="+ pages +">"+ pages +"</button>");
+                    $("#pagetation").append("<li onclick='organiseTable("+ pages +")' value="+ pages +"><a href='#'>"+ pages +"</a></li>");
                 }   
             }
             
@@ -169,36 +169,32 @@
             page = value;
             var end = value*5;
             value = (value-1)*5;
-            if( end > persons.length ){
-                end = persons.length;
+            if(filteredPersons.length == 0){
+                filteredPersons = persons;
             }
-            available = persons.length;
+            console.log(filteredPersons);
+            if( end > filteredPersons.length ){
+                end = filteredPersons.length;
+            }
+            available = filteredPersons.length;
             var lastPosition;
             table = [];
             for( var i = value ; i < end;i++ ){
-                
-                if( persons[i].visable ){
-                    table.push(persons[i]);
+                if( filteredPersons[i].isVisable() ){
+                    table.push(filteredPersons[i]);
                 }else{
-                    available--;
                     end++;
-                    if( end == persons.length )
-                    {
+                    if( end == filteredPersons.length ){
                         break;
                     }
                 }
-                lastPosition = i;
+              
             }
             for( var i = 0; i < table.length;i++ ){
                 $("#serviceList").append(table[i].creatRow());
                 $("#" + table[i].id).addClass(idClasses[table.id]);
             }
-            available = 0;
-            for( var i = lastPosition; i < persons[i].length;i++){
-                if( persons[i].visable ){
-                    available += 1;
-                }
-            }
+          
             //filtring();
         }
         
@@ -221,8 +217,6 @@
             $http.get("https://raw.githubusercontent.com/ElderDrop/Projekt-Na-Sta--/master/sluzba.json").then(function(data){
                var servicesFunctions = [];
                var experiences = [];
-               servicesFunctions.push("none");
-               experiences.push("none");
                var persons = [];
                for(var i = 0; i < data.data.length;i++){
                     if(!isInside(data.data[i].experience,experiences)){
@@ -231,16 +225,22 @@
                    if(!isInside(data.data[i].function.trim(),servicesFunctions))
                         servicesFunctions.push(data.data[i].function.trim());
                     }; 
+               
+               
+               experiences.sort(function( a, b ){return Number(a) - Number(b)});
+               $scope.experiences = experiences;
+               servicesFunctions.sort((function( a, b ){return a.localeCompare(b)}));
+               servicesFunctions.unshift("none");
+               experiences.unshift("none");
                $scope.serviceFunctions = servicesFunctions[0];
                $scope.experiencesOptions = experiences[0];
-               $scope.experiences = experiences;
             return $scope.servicesFunctions = servicesFunctions;
             });
         });
 
         //functions
         function filtring(){
-            
+                filteredPersons = [];
                 var data = $(".data").clone();
                 if(dateTwo < dateOne){
                     var tmp = dateOne;
@@ -258,21 +258,19 @@
                         if(!$( "#" + person.id ).hasClass(/fadeBy/)){
                             if( $( "#" + person.id ).hasClass("fadeByExp") ){
                                 $( "#" + person.id ).fadeIn();
-                                person.visable = true;
                             }
                             $( "#" + person.id ).removeClass("fadeByExp");
-                            
+                             person.visable[0] = true;
                          }
                     }else{
                         if( person.experience != value ){
                             $( "#" + person.id ).fadeOut().addClass("fadeByExp");
-                            person.visable = false;
-                            console.log("k")
+                            person.visable[0] = false;
                         }else{
                             if(!$( "#" + person.id ).hasClass(/fadeBy/)){
                                 $( "#" + person.id ).fadeIn();
                                 $( "#" + person.id ).removeClass("fadeByExp");
-                                person.visable = true;
+                                person.visable[0]= true;
                             }
                         }
                     
@@ -285,58 +283,63 @@
                       if(!$( "#" + person.id ).hasClass(/fadeBy/)){
                             if( $( "#" + person.id ).hasClass("fadeByServ") ){
                                 $( "#" + person.id ).fadeIn();
-                                person.visable = true;
                             }
                             $( "#" + person.id ).removeClass("fadeByServ");
-                            
+                            person.visable[1] = true;
                          }
                     }else{
                         if( person.serviceFunction != value ){
                             $( "#" + person.id ).fadeOut().addClass("fadeByServ");
-                            person.visable = false;
+                            person.visable[1]  = false;
                         }else{
                             if(!$( "#" + person.id ).hasClass(/fadeBy/)){
                                 $( "#" + person.id ).fadeIn();
                                 $( "#" + person.id ).removeClass("fadeByServ");
-                                person.visable = true;
+                                person.visable[1] = true;
                             }
                         }
                     
                     }
 
-                    value = $("#wantedFirstName").val().trim();
+                    value = $("#wantedFirstName").val().trim().toLowerCase();
                     if( value.length == 0 ){
                         $( "#" + person.id ).removeClass("fadeByFirstName");
                         if(!$( "#" + person.id ).hasClass(/fadeBy/)){
                                 $( "#" + person.id ).fadeIn();
                             }
+                            person.visable[2] = true;
                     }
                     if( value.length > 0 ){
-                        if( person.firstName.includes(value) ){
+                        if( person.firstName.toLowerCase().includes(value) ){
                             if( !$( "#" + person.id ).hasClass(/fadeBy/) ){
                                 $( "#" + person.id ).fadeIn();
                             }
                             $( "#" + person.id ).removeClass("fadeByFirstName");
+                            person.visable[2]  = true;
                         }else{
                             $( "#" + person.id ).fadeOut().addClass("fadeByFirstName");
+                            person.visable[2]  = false;
                         }
                     }
 
-                    value = $("#wantedLastName").val().trim();
+                    value = $("#wantedLastName").val().trim().toLowerCase();
                     if( value.length == 0 ){
                         $( "#" + person.id ).removeClass("fadeByLastName");
                         if(!$( "#" + person.id ).hasClass(/fadeBy/)){
                                 $( "#" + person.id ).fadeIn();
                             }
+                        person.visable[3]  = true;
                     }
                     if( value.length > 0 ){
-                        if( person.lastName.includes(value) ){
+                        if( person.lastName.toLowerCase().includes(value) ){
                             if(!$( "#" + person.id ).hasClass(/fadeBy/)){
                                 $( "#" + person.id ).fadeIn();
                             }
                             $( "#" + person.id ).removeClass("fadeByLastName");
+                            person.visable[3]  = true;
                         }else{
                             $( "#" + person.id ).fadeOut().addClass("fadeByLastName");
+                            person.visable[3]  = false;
                         }
                     }
                     var tmpDate = new Date(person.date.getFullYear(),person.date.getMonth(),person.date.getDay(),0,0,0,0);
@@ -346,14 +349,17 @@
                                     $( "#" + person.id ).fadeIn();
                                 }
                                 $( "#" + person.id ).removeClass("fadeByTime");
+                                person.visable[4]  = true;
                             }else{
                                 $( "#" + person.id ).fadeOut().addClass("fadeByTime");
+                                person.visable[4]  = false;
                             }
                     }
                     
                     
-                    
-                    
+                if( person.isVisable() ){
+                    filteredPersons.push( person );
+                }
                 }
                 organiseTable(1);
                 

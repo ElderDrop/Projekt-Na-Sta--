@@ -6,7 +6,9 @@ function Person(id,firstName, lastName, dateOfBirth, serviceFunction,experience)
             this.dateOfBirth = dateOfBirth;
             this.serviceFunction = serviceFunction;
             this.experience = experience;   
-            this.visable = true;
+            this.visable = [];
+            this.visable[0] = true;
+            this.visable[1] = true;
             this.date;
 
             //konstruktor
@@ -69,30 +71,26 @@ function Person(id,firstName, lastName, dateOfBirth, serviceFunction,experience)
                 }
                 
                 var date = new Date();
-                date.setFullYear(Number(year)-1,Number(month)-1,Number(day));
+                date.setFullYear(Number(year),Number(month)-1,Number(day));
                 date.setHours(Number(hour));
                 date.setMinutes(Number(minute));
                 
                 this.date = date;
             
             this.creatRow = function(){
-                
-                /*var row = $(".data").clone().get(1);
-                row.children[0].innerHTML = id;
-                row.children[1].innerHTML = firstName;
-                row.children[2].innerHTML = lastName;
-                row.children[3].innerHTML = dateOfBirth;
-                row.children[4].innerHTML = serviceFunction;
-                row.children[5].innerHTML = experience;
-                row.id = this.id;
-                //if(this.fade == true){
-              //      row.addClass("fadeBy");
-               // }*/
-               //var row = '<tr id="'+ this.id +'"><td>1</td><td>'+ this.firstName +'</td><td>'+ this.lastName +'</td><td>'+ this.dateOfBirth +'</td><td>'+ this.serviceFunction +'</td><td>'+ this.experience +'</td></tr>';
                 var row = document.createElement("tr");
                 row.innerHTML = '<td>'+ this.id +'</td><td>'+ this.firstName +'</td><td>'+ this.lastName +'</td><td>'+ this.dateOfBirth +'</td><td>'+ this.serviceFunction +'</td><td>'+ this.experience +'</td>';
                 row.id = this.id;
                 row.className += "data";
                 return row;
+            }
+            this.isVisable = function(){
+                
+                for( var i = 0; i < this.visable.length;i++ ){
+                    if(!this.visable[i]){
+                        return false;
+                    }
+                }
+                return true;
             }
         }
